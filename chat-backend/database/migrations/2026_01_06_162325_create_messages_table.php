@@ -13,7 +13,19 @@ return new class extends Migration
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
+
+            $table->foreignId('conversation_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('sender_id')->constrained('users');
+
+            $table->enum('type', ['text', 'image', 'system'])->default('text');
+            $table->text('body');
+
+            $table->timestamp('edited_at')->nullable();
+            $table->softDeletes();
+
             $table->timestamps();
+
+            $table->index(['conversation_id', 'created_at']);
         });
     }
 
