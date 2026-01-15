@@ -2,7 +2,7 @@
 
 namespace App\Actions\Message;
 
-use App\Data\Message\SendMessageData;
+use App\DTO\Message\SendMessageDTO;
 use App\Events\MessageSent;
 use App\Models\Conversation;
 use App\Models\Message;
@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class SendMessageAction
 {
-    public function execute(SendMessageData $data): Message
+    public function execute(SendMessageDTO $data): Message
     {
         return DB::transaction(function () use ($data) {
 
