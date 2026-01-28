@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use DomainException;
 use Illuminate\Database\Eloquent\Model;
 
 class Conversation extends Model
@@ -26,5 +27,30 @@ class Conversation extends Model
     public function lastMessage()
     {
         return $this->belongsTo(Message::class, 'last_message_id');
+    }
+
+    /**
+     * DOMAIN INVARIANT
+     */
+    public function assertParticipant(int $userId): void
+    {
+        $isParticipant = $this->participants()
+            ->where('user_id', $userId)
+            ->where('is_active', true)
+            ->exists();
+
+
+        if (! $isParticipant) {
+            throw new DomainException('User is not an active participant of this conversation.');
+        }
+    }
+
+
+    public function touchLastMessage(Message $message): void
+    {
+        $this->forceFill([
+            'last_message_id' => $message->id,
+            'last_message_at' => $message->created_at,
+        ])->save();
     }
 }
