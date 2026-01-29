@@ -14,6 +14,26 @@ class SendMessageAction
     {
         return DB::transaction(function () use ($data) {
 
+            // $conversation = Conversation::lockForUpdate()
+            //     ->findOrFail($dto->conversationId);
+
+            // // 🔒 DOMAIN INVARIANT
+            // $conversation->assertParticipant($dto->senderId);
+
+            // // 🧱 IDENTITY / IDEMPOTENCY HOOK (future-safe)
+            // if ($dto->clientMessageId) {
+            //     $existing = Message::where('client_message_id', $dto->clientMessageId)
+            //         ->first();
+
+            //     if ($existing) {
+            //         return $existing;
+            //     }
+            // }
+
+            // $message = Message::createFromDTO($dto);
+
+            // $conversation->touchLastMessage($message);
+
             // 1. Create message
             $message = Message::create([
                 'conversation_id' => $data->conversationId,
