@@ -1,33 +1,59 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useState, useEffect } from 'react'
 import './App.css'
+import './chat.js'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [messages, setMessages] = useState([])
+  const [message, setMessage] = useState('')
+
+  useEffect(() => {
+    // Load initial messages or conversations
+    // For now, just set up the chat div
+    const chatDiv = document.getElementById('chat')
+    if (chatDiv) {
+      chatDiv.innerHTML = '<p>Welcome to the chat!</p>'
+    }
+  }, [])
+
+  const sendMessage = async () => {
+    if (!message.trim()) return
+
+    try {
+      const response = await fetch('http://localhost:8000/api/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({
+          conversation_id: 1,
+          body: message
+        })
+      })
+
+      if (response.ok) {
+        setMessage('')
+      }
+    } catch (error) {
+      console.error('Error sending message:', error)
+    }
+  }
 
   return (
     <>
       <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <h1>Chat App</h1>
+        <div id="chat" style={{ border: '1px solid #ccc', height: '300px', overflowY: 'scroll', padding: '10px' }}></div>
+        <input
+          id="message"
+          type="text"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Type a message..."
+          style={{ width: '70%', padding: '5px' }}
+        />
+        <button id="send" onClick={sendMessage} style={{ padding: '5px 10px' }}>Send</button>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   )
 }
