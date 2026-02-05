@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Message;
+use App\Models\MessageReaction;
+use App\Policies\MessagePolicy;
+use App\Policies\MessageReactionPolicy;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +23,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Register policies
+        $this->registerPolicies();
+    }
+
+    /**
+     * Register authorization policies
+     */
+    protected function registerPolicies(): void
+    {
+        \Illuminate\Support\Facades\Gate::policy(Message::class, MessagePolicy::class);
+        \Illuminate\Support\Facades\Gate::policy(MessageReaction::class, MessageReactionPolicy::class);
     }
 }

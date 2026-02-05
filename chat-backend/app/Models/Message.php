@@ -34,4 +34,24 @@ class Message extends Model
     {
         return $this->hasMany(MessageReaction::class);
     }
+
+    public function pins()
+    {
+        return $this->hasMany(MessagePin::class);
+    }
+
+    public function edits()
+    {
+        return $this->hasMany(MessageEdit::class);
+    }
+
+    public function isPinned(): bool
+    {
+        return (bool) $this->is_pinned;
+    }
+
+    public function wasEdited(): bool
+    {
+        return $this->edit_count > 0;
+    }
 }
