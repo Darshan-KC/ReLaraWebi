@@ -46,20 +46,21 @@ Route::middleware('auth:sanctum')
 Route::middleware('auth:sanctum')
     ->delete('/messages/{message}/reactions/{reaction}', [MessageReactionController::class, 'destroy']);
 
+// Must come before emoji routes to avoid matching {emoji} parameter
 Route::middleware('auth:sanctum')
-    ->get('/messages/{message}/reactions', [MessageReactionController::class, 'getByMessage']);
+    ->get('/messages/{message}/reactions/stats', [MessageReactionController::class, 'getStats']);
 
 Route::middleware('auth:sanctum')
     ->get('/messages/{message}/reactions/detailed', [MessageReactionController::class, 'getDetailed']);
 
 Route::middleware('auth:sanctum')
-    ->get('/messages/{message}/reactions/{emoji}/users', [MessageReactionController::class, 'getUsersByEmoji']);
+    ->get('/messages/{message}/reactions', [MessageReactionController::class, 'getByMessage']);
 
 Route::middleware('auth:sanctum')
     ->get('/messages/{message}/reactions/{emoji}/has-reacted', [MessageReactionController::class, 'hasReacted']);
 
 Route::middleware('auth:sanctum')
-    ->get('/messages/{message}/reactions/stats', [MessageReactionController::class, 'getStats']);
+    ->get('/messages/{message}/reactions/{emoji}/users', [MessageReactionController::class, 'getUsersByEmoji']);
 
 // Message Pins
 Route::middleware('auth:sanctum')

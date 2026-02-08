@@ -2,52 +2,45 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\MessageReaction\CreateOrToggleReaction;
+use App\Http\Requests\StoreReactionRequest;
+use App\Http\Resources\MessageReactionResource;
 use App\Models\Message;
 use App\Models\MessageReaction;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Routing\Controller;
 
 class MessageReactionController extends Controller
 {
     use AuthorizesRequests;
 
+    public function __construct()
+    {
+        $this->middleware('throttle:reaction-create')->only('store');
+    }
+
     /**
      * Add or toggle a reaction on a message
      */
-    public function store(Request $request, Message $message)
+    public function store(StoreReactionRequest $request, Message $message, CreateOrToggleReaction $createOrToggleReaction)
     {
-        $validated = $request->validate([
-            'emoji' => 'required|string|max:10',
-        ]);
+        $validated = $request->validated();
 
         $user = $request->user();
-        $userId = $user ? (int) $user->id : null;
-
-        if (!$userId) {
+        
+        if (!$user) {
             return response()->json(['error' => 'Unauthenticated'], Response::HTTP_UNAUTHORIZED);
         }
 
-        // Check if reaction already exists
-        $existingReaction = MessageReaction::where('message_id', (int) $message->id)
-            ->where('user_id', $userId)
-            ->where('emoji', $validated['emoji'])
-            ->first();
+        $result = $createOrToggleReaction->execute($message, $user, $validated['emoji']);
 
-        // Toggle: remove if exists, add if doesn't exist
-        if ($existingReaction) {
-            $existingReaction->delete();
+        if (!$result['created']) {
             return response()->noContent();
         }
 
-        // Add new reaction
-        $reaction = MessageReaction::create([
-            'message_id' => (int) $message->id,
-            'user_id' => $userId,
-            'emoji' => $validated['emoji'],
-        ]);
-
-        return response()->json($reaction, Response::HTTP_CREATED);
+        return response()->json(new MessageReactionResource($result['reaction']), Response::HTTP_CREATED);
     }
 
     /**
