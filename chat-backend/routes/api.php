@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\BlockedUserController;
 use App\Http\Controllers\Api\ConversationController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\MessageEditController;
@@ -92,3 +93,19 @@ Route::middleware('auth:sanctum')
 
 Route::middleware('auth:sanctum')
     ->get('/conversations/{conversation}/messages/suggestions', [MessageSearchController::class, 'suggestions']);
+
+// Blocked Users
+Route::middleware('auth:sanctum')
+    ->get('/blocked-users', [BlockedUserController::class, 'index']);
+
+Route::middleware('auth:sanctum')
+    ->post('/blocked-users', [BlockedUserController::class, 'store']);
+
+Route::middleware('auth:sanctum')
+    ->delete('/blocked-users/{blockedUser}', [BlockedUserController::class, 'destroy']);
+
+Route::middleware('auth:sanctum')
+    ->get('/users/{user}/is-blocked', [BlockedUserController::class, 'isBlocked']);
+
+Route::middleware('auth:sanctum')
+    ->get('/users/{user}/has-blocked-me', [BlockedUserController::class, 'hasBlockedMe']);

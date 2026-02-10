@@ -45,4 +45,40 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Get users blocked by this user
+     */
+    public function blockedUsers()
+    {
+        return $this->hasMany(BlockedUser::class, 'user_id');
+    }
+
+    /**
+     * Get users who have blocked this user
+     */
+    public function blockedByUsers()
+    {
+        return $this->hasMany(BlockedUser::class, 'blocked_user_id');
+    }
+
+    /**
+     * Check if this user has blocked another user
+     */
+    public function hasBlocked(User $user): bool
+    {
+        return $this->blockedUsers()
+            ->where('blocked_user_id', $user->id)
+            ->exists();
+    }
+
+    /**
+     * Check if this user has been blocked by another user
+     */
+    public function isBlockedBy(User $user): bool
+    {
+        return $this->blockedByUsers()
+            ->where('user_id', $user->id)
+            ->exists();
+    }
 }
