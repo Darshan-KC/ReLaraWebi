@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\BlockedUserController;
 use App\Http\Controllers\Api\ConversationController;
+use App\Http\Controllers\Api\MessageBookmarkController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\MessageEditController;
 use App\Http\Controllers\Api\MessagePinController;
@@ -109,3 +110,22 @@ Route::middleware('auth:sanctum')
 
 Route::middleware('auth:sanctum')
     ->get('/users/{user}/has-blocked-me', [BlockedUserController::class, 'hasBlockedMe']);
+
+// Message Bookmarks
+Route::middleware('auth:sanctum')
+    ->get('/bookmarks', [MessageBookmarkController::class, 'index']);
+
+Route::middleware('auth:sanctum')
+    ->get('/conversations/{conversation}/bookmarks', [MessageBookmarkController::class, 'conversationBookmarks']);
+
+Route::middleware('auth:sanctum')
+    ->post('/messages/{message}/bookmark', [MessageBookmarkController::class, 'store']);
+
+Route::middleware('auth:sanctum')
+    ->delete('/messages/{message}/bookmark', [MessageBookmarkController::class, 'destroy']);
+
+Route::middleware('auth:sanctum')
+    ->put('/bookmarks/{messageBookmark}', [MessageBookmarkController::class, 'update']);
+
+Route::middleware('auth:sanctum')
+    ->get('/messages/{message}/bookmark/check', [MessageBookmarkController::class, 'check']);
