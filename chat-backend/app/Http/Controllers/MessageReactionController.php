@@ -18,7 +18,8 @@ class MessageReactionController extends Controller
 
     public function __construct()
     {
-        $this->middleware('throttle:reaction-create')->only('store');
+        $this->
+        middleware('throttle:reaction-create')->only('store');
     }
 
     /**
