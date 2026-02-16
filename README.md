@@ -26,3 +26,15 @@ Chat Application using React 19 and Laravel 12 for practice
 - Thin controllers (senior-style Laravel)
 
 ---
+
+## 🧱 Tech Stack
+
+| Layer | Technology |
+|-----|-----------|
+| Backend | Laravel |
+| Real-Time | Laravel Reverb |
+| Database | MySQL |
+| Frontend | React |
+| Auth | Laravel Auth / Sanctum |
+
+---
