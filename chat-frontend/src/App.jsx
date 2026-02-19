@@ -1,17 +1,22 @@
 import { useState, useEffect } from 'react'
-import './App.css'
-import './chat.js'
+import './App.css';
+import "./echo"; // make sure this exports Echo instance
 
 function App() {
   const [messages, setMessages] = useState([])
   const [message, setMessage] = useState('')
 
+  const conversationId = 1
+
   useEffect(() => {
-    // Load initial messages or conversations
-    // For now, just set up the chat div
-    const chatDiv = document.getElementById('chat')
-    if (chatDiv) {
-      chatDiv.innerHTML = '<p>Welcome to the chat!</p>'
+    // Listen for new messages
+    Echo.private(`conversation.${conversationId}`)
+      .listen('MessageSent', (e) => {
+        setMessages((prev) => [...prev, e])
+      })
+
+    return () => {
+      Echo.leave(`private-conversation.${conversationId}`)
     }
   }, [])
 
@@ -26,7 +31,7 @@ function App() {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify({
-          conversation_id: 1,
+          conversation_id: conversationId,
           body: message
         })
       })
@@ -40,21 +45,34 @@ function App() {
   }
 
   return (
-    <>
-      <div>
-        <h1>Chat App</h1>
-        <div id="chat" style={{ border: '1px solid #ccc', height: '300px', overflowY: 'scroll', padding: '10px' }}></div>
-        <input
-          id="message"
-          type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Type a message..."
-          style={{ width: '70%', padding: '5px' }}
-        />
-        <button id="send" onClick={sendMessage} style={{ padding: '5px 10px' }}>Send</button>
+    <div>
+      <h1>Chat App</h1>
+
+      <div
+        style={{
+          border: '1px solid #ccc',
+          height: '300px',
+          overflowY: 'scroll',
+          padding: '10px'
+        }}
+      >
+        {messages.map((msg, index) => (
+          <div key={index}>{msg.body}</div>
+        ))}
       </div>
-    </>
+
+      <input
+        type="text"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        placeholder="Type a message..."
+        style={{ width: '70%', padding: '5px' }}
+      />
+
+      <button onClick={sendMessage} style={{ padding: '5px 10px' }}>
+        Send
+      </button>
+    </div>
   )
 }
 

@@ -15,7 +15,7 @@ function addMessage(message) {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  document.querySelector("#send").onclick = async () => {
+  document.getElementById("send").onclick = async () => {
     const body = document.querySelector("#message").value;
 
     await axios.post("http://localhost:8000/api/messages", {
