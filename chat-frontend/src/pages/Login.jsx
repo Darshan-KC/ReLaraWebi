@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router";
 
 export default function Login() {
   const {Login} = useAuth();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -16,9 +17,15 @@ export default function Login() {
     });
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    Login(form);
+    try {
+      await Login(form);
+      navigate("/");
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
+    // Login(form);
     // navigate("/chat");
   }
   return (
