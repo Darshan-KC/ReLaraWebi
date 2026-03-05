@@ -16,6 +16,7 @@ export default function register()
     const handleSubmit = (e) => {
         e.preventDefault();
         // Handle registration logic here
+        console.log(formData);
     };
 
 
