@@ -20,9 +20,9 @@ class AuthController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Log in a user.
      */
-    public function store(Request $request)
+    public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
 
@@ -37,6 +37,31 @@ class AuthController extends Controller
                 'message' => 'Invalid credentials',
             ], 401);
         }
+    }
+
+    /**
+     * Register a new user.
+     */
+    public function register(Request $request)
+    {
+        // Validate the request data
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        // Create a new user
+        $user = \App\Models\User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+        ]);
+
+        return response()->json([
+            'message' => 'Registration successful',
+            'user' => $user,
+        ], 201);
     }
 
     /**
