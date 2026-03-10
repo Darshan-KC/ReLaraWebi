@@ -16,6 +16,13 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+Route::post('/login', [\App\Http\Controllers\Api\AuthController::class, 'login']);
+Route::post('/register', [\App\Http\Controllers\Api\AuthController::class, 'register']);
+
+// Logout route
+
+
+// Broadcasting auth route for Laravel Echo
 Route::middleware('auth:sanctum')
     ->post('/broadcasting/auth', function (Request $request) {
         return $request->user();
