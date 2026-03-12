@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -69,7 +70,17 @@ class AuthController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'User not found',
+            ], 404);
+        }
+
+        return response()->json([
+            'user' => $user,
+        ]);
     }
 
     /**
@@ -85,7 +96,10 @@ class AuthController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        User::destroy($id);
+        return response()->json([
+            'message' => 'User deleted successfully',
+        ]);
     }
 
     // Logout a user

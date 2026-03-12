@@ -19,8 +19,12 @@ Route::get('/user', function (Request $request) {
 Route::post('/login', [\App\Http\Controllers\Api\AuthController::class, 'login']);
 Route::post('/register', [\App\Http\Controllers\Api\AuthController::class, 'register']);
 
-// Logout route
-
+// Auth protected route
+Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::get('/me', [\App\Http\Controllers\Api\AuthController::class, 'index']);
+    Route::post('/logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
+    Route::delete('/users/{id}', [\App\Http\Controllers\Api\AuthController::class, 'destroy']);
+});
 
 // Broadcasting auth route for Laravel Echo
 Route::middleware('auth:sanctum')
