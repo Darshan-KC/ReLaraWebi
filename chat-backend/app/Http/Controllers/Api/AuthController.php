@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -25,6 +26,16 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
+        $validateData = Validator::make($request->all(), [
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+        ]);
+        if ($validateData->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validateData->errors(),
+            ], 422);
+        }
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
