@@ -1,10 +1,34 @@
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
 export default function Register() {
-  const { register } = useAuth();
+  const { register: registerUser } = useAuth();
   const navigate = useNavigate();
+
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm();
+
+  const onSubmit = async (data) => {
+    try {
+      await registerUser(data);
+      navigate("/");
+    } catch (error) {
+      if (error.response?.status === 422) {
+        const apiErrors = error.response.data.errors;
+        for (const key in apiErrors) {
+          setError(key, { type: "server", message: apiErrors[key][0] });
+        }
+      } else {
+        setError("general", { type: "server", message: "Something went wrong" });
+      }
+    }
+  }
 
   const [form, setForm] = useState({
     name: "",
@@ -13,7 +37,7 @@ export default function Register() {
     password_confirmation: "",
   });
 
-  const [errors, setErrors] = useState({});
+  // const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
   // Handle input
@@ -56,34 +80,34 @@ export default function Register() {
     return newErrors;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
 
-    const validationErrors = validate();
+  //   const validationErrors = validate();
 
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
+  //   if (Object.keys(validationErrors).length > 0) {
+  //     setErrors(validationErrors);
+  //     return;
+  //   }
 
-    try {
-      setLoading(true);
-      setErrors({});
+  //   try {
+  //     setLoading(true);
+  //     setErrors({});
 
-      await register(form);
+  //     await register(form);
 
-      navigate("/");
+  //     navigate("/");
 
-    } catch (error) {
-      if (error.response?.status === 422) {
-        setErrors(error.response.data.errors);
-      } else {
-        setErrors({ general: "Something went wrong" });
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+  //   } catch (error) {
+  //     if (error.response?.status === 422) {
+  //       setErrors(error.response.data.errors);
+  //     } else {
+  //       setErrors({ general: "Something went wrong" });
+  //     }
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
