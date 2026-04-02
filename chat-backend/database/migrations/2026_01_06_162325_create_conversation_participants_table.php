@@ -23,7 +23,7 @@ return new class extends Migration
             $table->timestamp('left_at')->nullable();
 
             // read receipts
-            $table->foreignId('last_read_message_id')->nullable()->constrained('messages');
+            $table->foreignId('last_read_message_id')->nullable();
 
             // per-user settings
             $table->timestamp('muted_until')->nullable();

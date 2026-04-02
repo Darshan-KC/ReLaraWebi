@@ -55,7 +55,7 @@ return new class extends Migration
             $table->unsignedBigInteger('message_id');
             $table->text('original_body');
             $table->text('edited_body');
-            $table->unsignedBigInteger('edited_by');
+            $table->unsignedBigInteger('edited_by')->nullable();
             $table->timestamps();
             
             $table->foreign('message_id')->references('id')->on('messages')->onDelete('cascade');

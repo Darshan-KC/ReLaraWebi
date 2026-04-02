@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('created_by')->constrained('users');
 
             // denormalized for fast listing
-            $table->foreignId('last_message_id')->nullable()->constrained('messages');
+            $table->foreignId('last_message_id')->nullable();
             $table->timestamp('last_message_at')->nullable();
 
             $table->timestamps();
