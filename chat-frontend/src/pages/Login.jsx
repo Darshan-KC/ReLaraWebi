@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import Button from "../components/ui/Button";
 
 export default function Login() {
   const { login } = useAuth();
@@ -129,12 +130,16 @@ export default function Login() {
             )}
           </div>
 
-          <button
+          {/* <button
             disabled={loading}
             className="w-full bg-blue-600 text-white py-2 rounded-lg"
           >
             {loading ? "Logging in..." : "Login"}
-          </button>
+          </button> */}
+
+          <Button disabled={loading} variant="primary" className="w-full" size="md">
+            Login
+          </Button>
 
         </form>
       </div>

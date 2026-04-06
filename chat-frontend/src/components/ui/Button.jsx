@@ -22,6 +22,7 @@ export default function Button({
     lg: "px-6 py-3 text-lg",
   };
 
+
   return (
     <button
       className={`${base} ${variants[variant]} ${sizes[size]} ${className}`}

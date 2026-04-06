@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "../validations/authSchema";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import Button from "../components/ui/Button";
 
 export default function Register() {
   const { register: registerUser } = useAuth();
@@ -122,12 +123,14 @@ export default function Register() {
             )}
           </div>
 
-          <button
+          {/* <button
             disabled={isSubmitting}
             className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
           >
             {isSubmitting ? "Creating account..." : "Register"}
-          </button>
+          </button> */}
+
+          <Button disabled={isSubmitting} variant="primary" className="w-full lg">{isSubmitting ? "Creating account..." : "Register"}</Button>
 
         </form>
 
