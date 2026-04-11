@@ -1,5 +1,5 @@
-import Dropdown from "./overlay/Dropdown";
-import Avatar from "./ui/Avatar";
+import Dropdown from "../overlay/Dropdown";
+import Avatar from "../ui/Avatar";
 import { useAuth } from "../../hooks/useAuth";
 
 export default function Navbar() {

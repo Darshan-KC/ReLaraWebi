@@ -5,7 +5,10 @@ import { Routes, Route } from 'react-router';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import Chat from './pages/Chat';
+import Profile from './pages/Profile';
 import ProtectedRoute from './components/ProtectedRoute';
+import AppLayout from './components/layout/AppLayout';
 
 function App() {
   const [messages, setMessages] = useState([])
@@ -53,24 +56,22 @@ function App() {
   return (
     <>
       <Routes>
-
+        {/* Public routes */}
         <Route path="/login" element={<Login />} />
-
         <Route path="/register" element={<Register />} />
 
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-
+        {/* Protected + layout */}
+        <Route element={<ProtectedRoute />}>
+          <Route element={<AppLayout />}>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/chat" element={<Chat />} />
+            <Route path="/profile" element={<Profile />} />
+          </Route>
+        </Route>
       </Routes>
 
 
-      
+
     </>
   )
 }
