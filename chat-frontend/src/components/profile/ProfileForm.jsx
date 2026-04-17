@@ -1,4 +1,22 @@
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const profileSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Invalid email address"),
+});
+
 export default function ProfileForm({ user, onChange, onSubmit }) {
+
+  const { register, handleSubmit, setError, formState} = useForm({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      name: user?.name || "",
+      email: user?.email || "",
+    },
+  });
+
   return (
     <form className="bg-white rounded-2xl shadow p-6" onSubmit={onSubmit}>
       <div className="mb-4">
