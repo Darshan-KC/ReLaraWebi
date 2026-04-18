@@ -7,9 +7,9 @@ const profileSchema = z.object({
   email: z.string().email("Invalid email address"),
 });
 
-export default function ProfileForm({ user, onChange, onSubmit }) {
+export default function ProfileForm({ user, onChange, onSave }) {
 
-  const { register, handleSubmit, setError, formState} = useForm({
+  const { register, handleSubmit, setError, formState: { errors, isSubmitting }} = useForm({
     resolver: zodResolver(profileSchema),
     defaultValues: {
       name: user?.name || "",
@@ -17,8 +17,22 @@ export default function ProfileForm({ user, onChange, onSubmit }) {
     },
   });
 
+  const onSubmit = async (data) => {
+    try {
+      await onSave(data);
+    }catch(error){
+      if(error.response?.status === 422){
+        const backendErrors = error.response.data.errors;
+
+        Object.keys(backendErrors).forEach((field) => {
+          setError(field, { type: "server", message: backendErrors[field][0] });
+        });
+      }
+    }
+  };
+
   return (
-    <form className="bg-white rounded-2xl shadow p-6" onSubmit={onSubmit}>
+    <form className="bg-white rounded-2xl shadow p-6" onSubmit={handleSubmit(onSubmit)}>
       <div className="mb-4">
         <label className="block text-gray-700 mb-2">Name</label>
         <input
@@ -27,6 +41,7 @@ export default function ProfileForm({ user, onChange, onSubmit }) {
           value={user?.name || ""}
           onChange={onChange}
           className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
+          error={errors.name?.message}
         />
       </div>
 
@@ -38,12 +53,14 @@ export default function ProfileForm({ user, onChange, onSubmit }) {
           value={user?.email || ""}
           onChange={onChange}
           className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
+          error={errors.email?.message}
         />
       </div>
 
       <button
         type="submit"
         className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-colors"
+        loading={isSubmitting}
       >
         Save Changes
       </button>
