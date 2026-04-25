@@ -8,7 +8,6 @@ export default function MessageBubble({ message, isOwn }) {
       >
         {message.text}
       </div>
-{/* This is for testing purposes only, to see if the message bubble is working correctly. It should display the message text and be styled differently based on whether it's the user's own message or someone else's. */}
-    </div>
+   </div>
   );
 }
