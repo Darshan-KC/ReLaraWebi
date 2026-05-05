@@ -1,4 +1,5 @@
-const TOKEN_KEY = "auth_token";
+// const TOKEN_KEY = "auth_token";
+const TOKEN_KEY = "accessToken";
 
 export const TokenService = {
     get(){

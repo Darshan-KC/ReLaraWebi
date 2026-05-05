@@ -40,9 +40,13 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
+
+            $token = $user->createToken('auth_token')->plainTextToken;
+
             return response()->json([
                 'message' => 'Login successful',
                 'user' => $user,
+                'token' => $token,
             ]);
         } else {
             return response()->json([
@@ -70,9 +74,12 @@ class AuthController extends Controller
             'password' => bcrypt($request->password),
         ]);
 
+        $token = $user->createToken('auth_token')->plainTextToken;
+
         return response()->json([
             'message' => 'Registration successful',
             'user' => $user,
+            'token' => $token,
         ], 201);
     }
 

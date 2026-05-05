@@ -1,7 +1,7 @@
-import StatCard from "../../components/dashboard/StatCard";
-import ActivityItem from "../../components/dashboard/ActivityItem";
-import Card from "../../components/ui/Card";
-import { useAuth } from "../../hooks/useAuth";
+import StatCard from "../components/dashboard/StatCard";
+import ActivityItem from "../components/dashboard/ActivityItem";
+import Card from "../components/ui/Card";
+import { useAuth } from "../hooks/useAuth";
 
 export default function Dashboard() {
   const { user } = useAuth();

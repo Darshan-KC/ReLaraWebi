@@ -60,14 +60,14 @@
 
 
 import { useState, useEffect } from "react";
-import ChatLayout from "../../components/chat/ChatLayout";
-import ChatSidebar from "../../components/chat/ChatSidebar";
-import ChatHeader from "../../components/chat/ChatHeader";
-import MessageList from "../../components/chat/MessageList";
-import MessageInput from "../../components/chat/MessageInput";
-import { useAuth } from "../../hooks/useAuth";
+import ChatLayout from "../components/chat/ChatLayout";
+import ChatSidebar from "../components/chat/ChatSidebar";
+import ChatHeader from "../components/chat/ChatHeader";
+import MessageList from "../components/chat/MessageList";
+import MessageInput from "../components/chat/MessageInput";
+import { useAuth } from "../hooks/useAuth";
 
-import { getUserChats, getMessagesByChat } from "../../mocks/helpers/chatHelpers";
+import { getUserChats, getMessagesByChat } from "../mocks/helpers/chatHelpers";
 
 export default function Chat() {
   const { user } = useAuth();

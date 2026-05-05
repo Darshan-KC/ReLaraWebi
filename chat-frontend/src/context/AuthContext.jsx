@@ -35,6 +35,8 @@ export function AuthProvider({ children }) {
 
     const data = await AuthService.login(credentials);
 
+    console.log("Login successful:", data);
+
     TokenService.set(data.token);
 
     setUser(data.user);
