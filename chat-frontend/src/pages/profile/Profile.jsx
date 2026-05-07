@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { useAuth } from "../hooks/useAuth";
-import ProfileCard from "../components/profile/ProfileCard";
-import ProfileForm from "../components/profile/ProfileForm";
-import Card from "../components/ui/Card";
+import { useAuth } from "../../hooks/useAuth";
+import ProfileCard from "../../components/profile/ProfileCard";
+import ProfileForm from "../../components/profile/ProfileForm";
+import Card from "../../components/ui/Card";
 
 export default function Profile() {
   const { user, updateProfile } = useAuth();

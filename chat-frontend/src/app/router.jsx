@@ -28,7 +28,7 @@ function PublicRoute({ children }) {
 
 export default function Router() {
   return (
-    <BrowserRouter>
+    // <BrowserRouter>
       <Routes>
 
         {/* Public */}
@@ -64,6 +64,6 @@ export default function Router() {
         </Route>
 
       </Routes>
-    </BrowserRouter>
+    // </BrowserRouter>
   );
 }

@@ -1,5 +1,5 @@
 // import { useState, useEffect } from 'react'
-// import './App.css';
+import './App.css';
 // import "./echo"; // make sure this exports Echo instance
 // import { Routes, Route } from 'react-router';
 // import Login from './pages/Login';

@@ -1,9 +1,9 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { registerSchema } from "../validations/authSchema";
-import { useAuth } from "../hooks/useAuth";
+import { registerSchema } from "../../validations/authSchema";
+import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import Button from "../components/ui/Button";
+import Button from "../../components/ui/Button";
 
 export default function Register() {
   const { register: registerUser } = useAuth();
