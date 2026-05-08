@@ -103,7 +103,8 @@ export default function Chat() {
     <ChatLayout
       sidebar={
         <ChatSidebar
-          users={chatList.map((chat) => chat.user)}
+          // users={chatList.map((chat) => chat.user)}
+          chats={chatList}
           onSelect={(user) => {
             const chat = chatList.find(
               (c) => c.user.id === user.id
