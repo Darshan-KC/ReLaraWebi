@@ -11,13 +11,13 @@ class SendMessageDTO
         public readonly string $type = 'text',
     ) {}
 
-    public static function fromRequest($request): self
+    public static function fromArray(array $array): self
     {
         return new self(
-            conversationId: $request->conversation_id,
-            senderId: $request->user()->id,
-            body: $request->body,
-            type: $request->type ?? 'text',
+            conversationId: $array['conversation_id'],
+            senderId: $array['user_id'],
+            body: $array['body'],
+            type: $array['type'] ?? 'text',
         );
     }
 }
