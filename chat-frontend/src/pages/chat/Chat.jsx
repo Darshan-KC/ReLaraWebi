@@ -66,6 +66,7 @@ import ChatHeader from "../../components/chat/ChatHeader";
 import MessageList from "../../components/chat/MessageList";
 import MessageInput from "../../components/chat/MessageInput";
 import { useAuth } from "../../hooks/useAuth";
+import useChatRealtime from "../../hooks/useChatRealtime";
 
 import { getUserChats, getMessagesByChat } from "../../mocks/helpers/chatHelpers";
 
