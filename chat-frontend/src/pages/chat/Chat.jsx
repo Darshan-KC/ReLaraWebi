@@ -66,6 +66,7 @@ import ChatHeader from "../../components/chat/ChatHeader";
 import MessageList from "../../components/chat/MessageList";
 import MessageInput from "../../components/chat/MessageInput";
 import { useAuth } from "../../hooks/useAuth";
+import useChat from "../../hooks/useChat";
 import useChatRealtime from "../../hooks/useChatRealtime";
 
 import { getUserChats, getMessagesByChat } from "../../mocks/helpers/chatHelpers";
@@ -76,6 +77,28 @@ export default function Chat() {
   const [chatList, setChatList] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
   const [messages, setMessages] = useState([]);
+
+  const {
+    conversations,
+
+    selectedConversation,
+
+    setSelectedConversation,
+
+    messages,
+
+    handleSendMessage,
+
+    appendMessage,
+  } = useChat(user);
+
+  // Realtime
+  useChatRealtime({
+    conversationId:
+      selectedConversation?.id,
+
+    onMessageReceived: appendMessage,
+  });
 
   useEffect(() => {
     const chats = getUserChats(user.id);
