@@ -6,6 +6,7 @@ export default function useChatRealtime({
   onMessageReceived,
 }) {
 
+  // Listen for new messages in the selected conversation
   useEffect(() => {
 
     if (!conversationId) return;
