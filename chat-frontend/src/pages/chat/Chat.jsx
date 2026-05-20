@@ -76,7 +76,7 @@ export default function Chat() {
 
   const [chatList, setChatList] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
-  const [messages, setMessages] = useState([]);
+  // const [messages, setMessages] = useState([]);
 
   // Chat logic
   const {
