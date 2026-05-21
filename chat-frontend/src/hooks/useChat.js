@@ -1,33 +1,140 @@
-import { useEffect } from "react";
-import echo from "../lib/echo";
+import { useEffect, useState } from "react";
 
-export default function useChatRealtime({
-  conversationId,
-  onMessageReceived,
-}) {
+import {
+  getConversations,
+  getMessages,
+  sendMessage,
+} from "../services/chatService";
 
-  // Listen for new messages in the selected conversation
+export default function useChat(user) {
+
+  const [conversations, setConversations] = useState([]);
+
+  const [selectedConversation, setSelectedConversation] =
+    useState(null);
+
+  const [messages, setMessages] = useState([]);
+
+  const [loadingConversations, setLoadingConversations] =
+    useState(false);
+
+  const [loadingMessages, setLoadingMessages] =
+    useState(false);
+
+  // Fetch conversations
   useEffect(() => {
 
-    if (!conversationId) return;
+    fetchConversations();
 
-    const channel = echo.private(
-      `conversation.${conversationId}`
-    );
+  }, []);
 
-    channel.listen(".message.sent", (event) => {
+  const fetchConversations = async () => {
 
-      onMessageReceived(event.message);
+    try {
 
-    });
+      setLoadingConversations(true);
 
-    return () => {
+      const data = await getConversations();
 
-      echo.leave(
-        `conversation.${conversationId}`
+      setConversations(data);
+
+    } finally {
+
+      setLoadingConversations(false);
+
+    }
+  };
+
+  // Select conversation
+  const selectConversation = async (conversation) => {
+
+    setSelectedConversation(conversation);
+
+    try {
+
+      setLoadingMessages(true);
+
+      const data = await getMessages(
+        conversation.id
       );
 
+      setMessages(data.reverse());
+
+    } finally {
+
+      setLoadingMessages(false);
+
+    }
+  };
+
+  // Send message
+  const handleSendMessage = async (body) => {
+
+    if (!selectedConversation) return;
+
+    // Optimistic UI
+    const tempMessage = {
+      id: Date.now(),
+      body,
+      sender_id: user.id,
+      created_at: new Date().toISOString(),
     };
 
-  }, [conversationId]);
+    setMessages((prev) => [
+      ...prev,
+      tempMessage,
+    ]);
+
+    try {
+
+      const savedMessage = await sendMessage({
+        conversation_id: selectedConversation.id,
+        body,
+      });
+
+      // Replace temp message
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === tempMessage.id
+            ? savedMessage
+            : msg
+        )
+      );
+
+    } catch (error) {
+
+      // rollback
+      setMessages((prev) =>
+        prev.filter((msg) => msg.id !== tempMessage.id)
+      );
+
+      throw error;
+    }
+  };
+
+  // Receive realtime message
+  const appendMessage = (message) => {
+
+    setMessages((prev) => [...prev, message]);
+
+  };
+
+  return {
+    conversations,
+
+    selectedConversation,
+
+    setSelectedConversation:
+      selectConversation,
+
+    messages,
+
+    loadingConversations,
+
+    loadingMessages,
+
+    handleSendMessage,
+
+    appendMessage,
+  };
 }
