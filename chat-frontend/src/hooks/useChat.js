@@ -28,6 +28,7 @@ export default function useChat(user) {
 
   }, []);
 
+  // Fetch conversations function
   const fetchConversations = async () => {
 
     try {
