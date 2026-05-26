@@ -82,4 +82,20 @@ class User extends Authenticatable
             ->where('user_id', $user->id)
             ->exists();
     }
+
+    public function sentFriendRequests()
+    {
+        return $this->hasMany(
+            Friendship::class,
+            'sender_id'
+        );
+    }
+
+    public function receivedFriendRequests()
+    {
+        return $this->hasMany(
+            Friendship::class,
+            'receiver_id'
+        );
+    }
 }
