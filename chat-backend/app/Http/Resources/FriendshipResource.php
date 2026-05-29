@@ -14,6 +14,16 @@ class FriendshipResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'status' => $this->status,
+            'accepted_at' => $this->accepted_at,
+            'sender' => UserResource::make(
+                $this->whenLoaded('sender')
+            ),
+            'receiver' => UserResource::make(
+                $this->whenLoaded('receiver')
+            ),
+        ];
     }
 }
