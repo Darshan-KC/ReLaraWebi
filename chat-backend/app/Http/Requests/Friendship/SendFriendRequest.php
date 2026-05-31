@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Friendship;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class SendFriendRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class SendFriendRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +23,11 @@ class SendFriendRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'receiver_id' => [
+                'required',
+                'exists:users,id',
+                'different:' . Auth::id(),
+            ],
         ];
     }
 }
