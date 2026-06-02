@@ -1,4 +1,8 @@
+<?php
+
 namespace App\DTO\Friendship;
+
+use Illuminate\Support\Facades\Auth;
 
 class SendFriendRequestDTO
 {
@@ -10,7 +14,7 @@ class SendFriendRequestDTO
     public static function fromArray(array $data): self
     {
         return new self(
-            senderId: auth()->id(),
+            senderId: Auth::id(),
             receiverId: $data['receiver_id'],
         );
     }
