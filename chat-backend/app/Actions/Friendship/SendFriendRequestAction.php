@@ -1,24 +1,41 @@
 <?php
+
 namespace App\Actions\Friendship;
 
 use App\DTO\Friendship\SendFriendRequestDTO;
+use App\Models\Friendship;
 
 class SendFriendRequestAction
-    {
-        public function execute(
-            SendFriendRequestDTO $dto
-        ) {
-            // Logic to send a friend request
-            // This might involve creating a new Friendship record in the database
-            // and sending a notification to the recipient
+{
+    public function execute(
+        SendFriendRequestDTO $dto
+    ): Friendship {
 
-            // For example:
-            // $friendship = Friendship::create([
-            //     'sender_id' => $dto->sender_id,
-            //     'recipient_id' => $dto->recipient_id,
-            //     'status' => 'pending',
-            // ]);
+        $existing = Friendship::query()
+            ->where(function ($query) use ($dto) {
 
-            // return $friendship;
+                $query
+                    ->where('sender_id', $dto->senderId)
+                    ->where('receiver_id', $dto->receiverId);
+            })
+            ->orWhere(function ($query) use ($dto) {
+
+                $query
+                    ->where('sender_id', $dto->receiverId)
+                    ->where('receiver_id', $dto->senderId);
+            })
+            ->first();
+
+        if ($existing) {
+            throw new \Exception(
+                'Friend request already exists.'
+            );
         }
+
+        return Friendship::create([
+            'sender_id' => $dto->senderId,
+            'receiver_id' => $dto->receiverId,
+            'status' => 'pending',
+        ]);
     }
+}
