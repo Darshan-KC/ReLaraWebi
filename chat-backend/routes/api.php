@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\BlockedUserController;
 use App\Http\Controllers\Api\ConversationController;
+use App\Http\Controllers\Api\FriendshipController;
 use App\Http\Controllers\Api\MessageBookmarkController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\MessageEditController;
@@ -140,3 +141,15 @@ Route::middleware('auth:sanctum')
 
 Route::middleware('auth:sanctum')
     ->get('/messages/{message}/bookmark/check', [MessageBookmarkController::class, 'check']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post(
+        '/friendships',
+        [FriendshipController::class, 'store']
+    );
+
+    Route::post(
+        '/friendships/{friendship}/accept',
+        [FriendshipController::class, 'accept']
+    );
+});
