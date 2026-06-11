@@ -27,3 +27,12 @@ export const acceptFriendRequest = async (requestId) => {
     const response = await api.post(`/friend-requests/${requestId}/accept`);
     return response.data;
 }
+
+/**
+ * Retrieves a list of all friends for the current user.
+ * @returns {Promise<User[]>}
+ */
+export const getFriends = async () => {
+  const res = await api.get("/friendships/friends");
+  return res.data;
+};
