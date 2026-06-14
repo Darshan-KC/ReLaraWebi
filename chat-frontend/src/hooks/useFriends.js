@@ -5,10 +5,10 @@ import {
   getFriendRequests,
   acceptFriendRequest,
   getFriends,
-} from "../services/friendService";
+} from "../services/friendshipService";
 
 export default function useFriends() {
-    const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState([]);
   const [requests, setRequests] = useState([]);
   const [friends, setFriends] = useState([]);
 
@@ -32,6 +32,39 @@ export default function useFriends() {
       setLoading(false);
     }
   };
-    return ;
 
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  // Send request
+  const addFriend = async (userId) => {
+    await sendFriendRequest(userId);
+
+    setUsers((prev) =>
+      prev.filter((u) => u.id !== userId)
+    );
+  };
+
+  // Accept request
+  const acceptRequest = async (id) => {
+    await acceptFriendRequest(id);
+
+    setRequests((prev) =>
+      prev.filter((r) => r.id !== id)
+    );
+
+    // reload friends
+    const f = await getFriends();
+    setFriends(f);
+  };
+
+  return {
+    users,
+    requests,
+    friends,
+    loading,
+    addFriend,
+    acceptRequest,
+  };
 }
