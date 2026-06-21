@@ -130,6 +130,7 @@ export default function Chat() {
         <ChatSidebar
           // users={chatList.map((chat) => chat.user)}
           chats={chatList}
+          // chats={friends}
           onSelect={(user) => {
             const chat = chatList.find(
               (c) => c.user.id === user.id
