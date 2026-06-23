@@ -2,6 +2,8 @@
 
 namespace App\DTO\Conversation;
 
+use Illuminate\Support\Facades\Auth;
+
 class OpenConversationDTO
 {
     public function __construct(
@@ -12,7 +14,7 @@ class OpenConversationDTO
     public static function fromArray(array $data): self
     {
         return new self(
-            userId: auth()->id(),
+            userId: Auth::id(),
             friendId: $data['friend_id'],
         );
     }
