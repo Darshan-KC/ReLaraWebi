@@ -84,6 +84,11 @@ Route::middleware('auth:sanctum')
 Route::middleware('auth:sanctum')
     ->delete('/messages/{message}/pin', [MessagePinController::class, 'destroy']);
 
+Route::post(
+    '/conversations/open',
+    [ConversationController::class, 'open']
+);
+
 Route::middleware('auth:sanctum')
     ->get('/conversations/{conversationId}/pinned', [MessagePinController::class, 'getPinned']);
 
