@@ -7,70 +7,51 @@ import {
 } from "../services/chatService";
 
 export default function useChat(user) {
-
   const [conversations, setConversations] = useState([]);
 
-  const [selectedConversation, setSelectedConversation] =
-    useState(null);
+  const [selectedConversation, setSelectedConversation] = useState(null);
 
   const [messages, setMessages] = useState([]);
 
-  const [loadingConversations, setLoadingConversations] =
-    useState(false);
+  const [loadingConversations, setLoadingConversations] = useState(false);
 
-  const [loadingMessages, setLoadingMessages] =
-    useState(false);
+  const [loadingMessages, setLoadingMessages] = useState(false);
 
   // Fetch conversations
   useEffect(() => {
-
     fetchConversations();
-
   }, []);
 
   // Fetch conversations function
   const fetchConversations = async () => {
-
     try {
-
       setLoadingConversations(true);
 
       const data = await getConversations();
 
       setConversations(data);
-
     } finally {
-
       setLoadingConversations(false);
-
     }
   };
 
   // Select conversation
   const selectConversation = async (conversation) => {
-
     setSelectedConversation(conversation);
 
     try {
-
       setLoadingMessages(true);
 
-      const data = await getMessages(
-        conversation.id
-      );
+      const data = await getMessages(conversation.id);
 
       setMessages(data.reverse());
-
     } finally {
-
       setLoadingMessages(false);
-
     }
   };
 
   // Send message
   const handleSendMessage = async (body) => {
-
     if (!selectedConversation) return;
 
     // Optimistic UI
@@ -81,13 +62,9 @@ export default function useChat(user) {
       created_at: new Date().toISOString(),
     };
 
-    setMessages((prev) => [
-      ...prev,
-      tempMessage,
-    ]);
+    setMessages((prev) => [...prev, tempMessage]);
 
     try {
-
       const savedMessage = await sendMessage({
         conversation_id: selectedConversation.id,
         body,
@@ -95,19 +72,11 @@ export default function useChat(user) {
 
       // Replace temp message
       setMessages((prev) =>
-        prev.map((msg) =>
-          msg.id === tempMessage.id
-            ? savedMessage
-            : msg
-        )
+        prev.map((msg) => (msg.id === tempMessage.id ? savedMessage : msg)),
       );
-
     } catch (error) {
-
       // rollback
-      setMessages((prev) =>
-        prev.filter((msg) => msg.id !== tempMessage.id)
-      );
+      setMessages((prev) => prev.filter((msg) => msg.id !== tempMessage.id));
 
       throw error;
     }
@@ -115,9 +84,13 @@ export default function useChat(user) {
 
   // Receive realtime message
   const appendMessage = (message) => {
-
     setMessages((prev) => [...prev, message]);
+  };
 
+  const openChat = async (friend) => {
+    const conversation = await openConversation(friend.id);
+
+    await selectConversation(conversation);
   };
 
   return {
@@ -125,8 +98,7 @@ export default function useChat(user) {
 
     selectedConversation,
 
-    setSelectedConversation:
-      selectConversation,
+    setSelectedConversation: selectConversation,
 
     messages,
 
