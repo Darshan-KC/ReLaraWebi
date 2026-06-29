@@ -99,6 +99,7 @@ export default function useChat(user) {
     selectedConversation,
 
     setSelectedConversation: selectConversation,
+    openChat,
 
     messages,
 

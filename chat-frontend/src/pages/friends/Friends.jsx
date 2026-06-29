@@ -17,6 +17,11 @@ export default function Friends() {
           >
             <p className="font-semibold">
               {friend.name}
+              <button
+                onClick={() => openChat(friend)}
+              >
+                Message
+              </button>
             </p>
           </div>
         ))}
