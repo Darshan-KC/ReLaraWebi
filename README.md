@@ -4,6 +4,10 @@ Chat Application using React 19 and Laravel 12 for practice
 
 ## 🚀 Features Implemented
 
+### Find Friends
+- Send Friend Request
+- Find Friends
+
 ### ✅ Core Messaging
 - One-to-one conversations
 - Real-time message delivery
