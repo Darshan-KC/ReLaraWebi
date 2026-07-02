@@ -5,7 +5,7 @@ import {
   getFriendRequests,
   acceptFriendRequest,
   getFriends,
-} from "../services/friendshipService";
+} from "../services/friendship.service";
 
 export default function useFriends() {
   const [users, setUsers] = useState([]);

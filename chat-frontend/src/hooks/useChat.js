@@ -4,7 +4,7 @@ import {
   getConversations,
   getMessages,
   sendMessage,
-} from "../services/chatService";
+} from "../services/chat.service";
 
 export default function useChat(user) {
   const [conversations, setConversations] = useState([]);
