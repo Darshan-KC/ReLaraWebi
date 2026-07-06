@@ -1,4 +1,4 @@
-import api from './api';
+import { apiFetch } from "./api";
 
 /**
  * Retrieves a list of all users.
@@ -34,5 +34,10 @@ export const acceptFriendRequest = async (requestId) => {
  */
 export const getFriends = async () => {
   const res = await api.get("/friendships/friends");
+  return res.data;
+};
+
+export const getFriendRequests = async () => {
+  const res = await api.get("/friend-requests");
   return res.data;
 };
