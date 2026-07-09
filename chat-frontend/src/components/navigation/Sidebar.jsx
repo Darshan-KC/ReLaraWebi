@@ -34,6 +34,15 @@ export default function Sidebar() {
         </NavLink>
 
         <NavLink
+          to="/friends"
+          className={({ isActive }) =>
+            `${linkClass} ${isActive ? activeClass : ""}`
+          }
+        >
+          Friends
+        </NavLink>
+
+        <NavLink
           to="/profile"
           className={({ isActive }) =>
             `${linkClass} ${isActive ? activeClass : ""}`

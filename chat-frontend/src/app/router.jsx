@@ -12,6 +12,7 @@ import Chat from "../pages/chat/Chat";
 // Auth
 import { useAuth } from "../hooks/useAuth";
 import Friends from "../pages/friends/Friends";
+import DiscoverUsers from "../pages/friends/DiscoverUsers";
 
 // 🔒 Protected Route
 function PrivateRoute({ children }) {
@@ -63,6 +64,7 @@ export default function Router() {
           <Route path="/chat" element={<Chat />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/friends" element={<Friends />} />
+          <Route path="/find-friends" element={<DiscoverUsers />} />
         </Route>
 
       </Routes>
