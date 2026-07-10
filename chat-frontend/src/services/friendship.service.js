@@ -2,42 +2,71 @@ import { apiFetch } from "./api";
 
 /**
  * Retrieves a list of all users.
- * @returns {Promise<User[]>}
+ *
+ * @async
+ * @function getUsers
+ * @returns {Promise<User[]>} A promise that resolves to an array of users.
  */
 export const getUsers = async () => {
-    const response = await api.get('/users');
+    const response = await apiFetch("/users");
     return response.data;
-}
-
-/** Retrieves a list of all friends for the current user.
- * @param {string} userId - The ID of the current user.
- * @returns {Promise<User[]>}
- */
-export const sendFriendRequest = async (receiverId) => {
-    const response = await api.post('/friend-requests', { receiverId });
-    return response.data;
-}
-
-/**
- * Accepts a friend request.
- * @param {string} requestId - The ID of the friend request to accept.
- * @returns {Promise<any>}
- */
-export const acceptFriendRequest = async (requestId) => {
-    const response = await api.post(`/friend-requests/${requestId}/accept`);
-    return response.data;
-}
-
-/**
- * Retrieves a list of all friends for the current user.
- * @returns {Promise<User[]>}
- */
-export const getFriends = async () => {
-  const res = await api.get("/friendships/friends");
-  return res.data;
 };
 
+/**
+ * Sends a friend request to another user.
+ *
+ * @async
+ * @function sendFriendRequest
+ * @param {string|number} receiverId - The ID of the user receiving the friend request.
+ * @returns {Promise<any>} A promise that resolves to the created friend request.
+ */
+export const sendFriendRequest = async (receiverId) => {
+    const response = await apiFetch("/friend-requests", {
+        method: "POST",
+        body: JSON.stringify({
+            receiver_id: receiverId,
+        }),
+    });
+
+    return response.data;
+};
+
+/**
+ * Accepts a pending friend request.
+ *
+ * @async
+ * @function acceptFriendRequest
+ * @param {string|number} requestId - The ID of the friend request.
+ * @returns {Promise<any>} A promise that resolves to the accepted friendship.
+ */
+export const acceptFriendRequest = async (requestId) => {
+    const response = await apiFetch(`/friend-requests/${requestId}/accept`, {
+        method: "POST",
+    });
+
+    return response.data;
+};
+
+/**
+ * Retrieves all friends of the authenticated user.
+ *
+ * @async
+ * @function getFriends
+ * @returns {Promise<User[]>} A promise that resolves to an array of friends.
+ */
+export const getFriends = async () => {
+    const response = await apiFetch("/friendships/friends");
+    return response.data;
+};
+
+/**
+ * Retrieves all pending friend requests for the authenticated user.
+ *
+ * @async
+ * @function getFriendRequests
+ * @returns {Promise<any[]>} A promise that resolves to an array of friend requests.
+ */
 export const getFriendRequests = async () => {
-  const res = await api.get("/friend-requests");
-  return res.data;
+    const response = await apiFetch("/friend-requests");
+    return response.data;
 };
