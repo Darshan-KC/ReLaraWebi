@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BlockedUserController;
 use App\Http\Controllers\Api\ConversationController;
 use App\Http\Controllers\Api\FriendshipController;
@@ -13,148 +14,182 @@ use App\Http\Controllers\MessageReactionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+/*
+|--------------------------------------------------------------------------
+| Public Routes
+|--------------------------------------------------------------------------
+*/
 
-Route::post('/login', [\App\Http\Controllers\Api\AuthController::class, 'login']);
-Route::post('/register', [\App\Http\Controllers\Api\AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
 
-// Auth protected route
-Route::group(['middleware' => 'auth:sanctum'], function () {
-    Route::get('/me', [\App\Http\Controllers\Api\AuthController::class, 'index']);
-    Route::post('/logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
-    Route::delete('/users/{id}', [\App\Http\Controllers\Api\AuthController::class, 'destroy']);
-});
-
-// Broadcasting auth route for Laravel Echo
-Route::middleware('auth:sanctum')
-    ->post('/broadcasting/auth', function (Request $request) {
-        return $request->user();
-    });
-
-Route::middleware('auth:sanctum')
-    ->get('/conversations', [ConversationController::class, 'index']);
-
-Route::middleware('auth:sanctum')
-    ->get('/conversations/{conversation}', [ConversationController::class, 'show']);
-
-Route::middleware('auth:sanctum')
-    ->post('/messages', [MessageController::class, 'store']);
-
-Route::middleware('auth:sanctum')
-    ->put('/messages/{message}', [MessageEditController::class, 'update']);
-
-Route::middleware('auth:sanctum')
-    ->delete('/messages/{message}', [MessageEditController::class, 'destroy']);
-
-Route::middleware('auth:sanctum')
-    ->post('/messages/{message}/restore', [MessageEditController::class, 'restore']);
-
-Route::middleware('auth:sanctum')
-    ->get('/messages/{message}/edits', [MessageEditController::class, 'editHistory']);
-
-// Message Reactions
-Route::middleware('auth:sanctum')
-    ->post('/messages/{message}/reactions', [MessageReactionController::class, 'store']);
-
-Route::middleware('auth:sanctum')
-    ->delete('/messages/{message}/reactions/{reaction}', [MessageReactionController::class, 'destroy']);
-
-// Must come before emoji routes to avoid matching {emoji} parameter
-Route::middleware('auth:sanctum')
-    ->get('/messages/{message}/reactions/stats', [MessageReactionController::class, 'getStats']);
-
-Route::middleware('auth:sanctum')
-    ->get('/messages/{message}/reactions/detailed', [MessageReactionController::class, 'getDetailed']);
-
-Route::middleware('auth:sanctum')
-    ->get('/messages/{message}/reactions', [MessageReactionController::class, 'getByMessage']);
-
-Route::middleware('auth:sanctum')
-    ->get('/messages/{message}/reactions/{emoji}/has-reacted', [MessageReactionController::class, 'hasReacted']);
-
-Route::middleware('auth:sanctum')
-    ->get('/messages/{message}/reactions/{emoji}/users', [MessageReactionController::class, 'getUsersByEmoji']);
-
-// Message Pins
-Route::middleware('auth:sanctum')
-    ->post('/messages/{message}/pin', [MessagePinController::class, 'store']);
-
-Route::middleware('auth:sanctum')
-    ->delete('/messages/{message}/pin', [MessagePinController::class, 'destroy']);
-
-Route::post(
-    '/conversations/open',
-    [ConversationController::class, 'open']
-);
-
-Route::middleware('auth:sanctum')
-    ->get('/conversations/{conversationId}/pinned', [MessagePinController::class, 'getPinned']);
-
-// Typing Indicators
-Route::middleware('auth:sanctum')
-    ->post('/conversations/{conversation}/typing', [TypingIndicatorController::class, 'store']);
-
-Route::middleware('auth:sanctum')
-    ->delete('/conversations/{conversation}/typing', [TypingIndicatorController::class, 'destroy']);
-
-Route::middleware('auth:sanctum')
-    ->get('/conversations/{conversation}/typing', [TypingIndicatorController::class, 'getTyping']);
-
-// Message Search
-Route::middleware('auth:sanctum')
-    ->get('/messages/search', [MessageSearchController::class, 'searchGlobal']);
-
-Route::middleware('auth:sanctum')
-    ->get('/conversations/{conversation}/messages/search', [MessageSearchController::class, 'search']);
-
-Route::middleware('auth:sanctum')
-    ->get('/conversations/{conversation}/messages/suggestions', [MessageSearchController::class, 'suggestions']);
-
-// Blocked Users
-Route::middleware('auth:sanctum')
-    ->get('/blocked-users', [BlockedUserController::class, 'index']);
-
-Route::middleware('auth:sanctum')
-    ->post('/blocked-users', [BlockedUserController::class, 'store']);
-
-Route::middleware('auth:sanctum')
-    ->delete('/blocked-users/{blockedUser}', [BlockedUserController::class, 'destroy']);
-
-Route::middleware('auth:sanctum')
-    ->get('/users/{user}/is-blocked', [BlockedUserController::class, 'isBlocked']);
-
-Route::middleware('auth:sanctum')
-    ->get('/users/{user}/has-blocked-me', [BlockedUserController::class, 'hasBlockedMe']);
-
-// Message Bookmarks
-Route::middleware('auth:sanctum')
-    ->get('/bookmarks', [MessageBookmarkController::class, 'index']);
-
-Route::middleware('auth:sanctum')
-    ->get('/conversations/{conversation}/bookmarks', [MessageBookmarkController::class, 'conversationBookmarks']);
-
-Route::middleware('auth:sanctum')
-    ->post('/messages/{message}/bookmark', [MessageBookmarkController::class, 'store']);
-
-Route::middleware('auth:sanctum')
-    ->delete('/messages/{message}/bookmark', [MessageBookmarkController::class, 'destroy']);
-
-Route::middleware('auth:sanctum')
-    ->put('/bookmarks/{messageBookmark}', [MessageBookmarkController::class, 'update']);
-
-Route::middleware('auth:sanctum')
-    ->get('/messages/{message}/bookmark/check', [MessageBookmarkController::class, 'check']);
+/*
+|--------------------------------------------------------------------------
+| Protected Routes
+|--------------------------------------------------------------------------
+*/
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post(
-        '/friendships',
-        [FriendshipController::class, 'store']
-    );
 
-    Route::post(
-        '/friendships/{friendship}/accept',
-        [FriendshipController::class, 'accept']
-    );
+    /*
+    |--------------------------------------------------------------------------
+    | Authentication
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/user', fn(Request $request) => $request->user());
+
+    Route::controller(AuthController::class)->group(function () {
+        Route::get('/me', 'index');
+        Route::post('/logout', 'logout');
+        Route::delete('/users/{id}', 'destroy');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Broadcasting
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post('/broadcasting/auth', fn(Request $request) => $request->user());
+
+    /*
+    |--------------------------------------------------------------------------
+    | Conversations
+    |--------------------------------------------------------------------------
+    */
+
+    Route::controller(ConversationController::class)->group(function () {
+        Route::get('/conversations', 'index');
+        Route::get('/conversations/{conversation}', 'show');
+        Route::post('/conversations/open', 'open');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Messages
+    |--------------------------------------------------------------------------
+    */
+
+    Route::controller(MessageController::class)->group(function () {
+        Route::post('/messages', 'store');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Message Editing
+    |--------------------------------------------------------------------------
+    */
+
+    Route::controller(MessageEditController::class)->group(function () {
+        Route::put('/messages/{message}', 'update');
+        Route::delete('/messages/{message}', 'destroy');
+        Route::post('/messages/{message}/restore', 'restore');
+        Route::get('/messages/{message}/edits', 'editHistory');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Message Reactions
+    |--------------------------------------------------------------------------
+    */
+
+    Route::prefix('messages/{message}/reactions')
+        ->controller(MessageReactionController::class)
+        ->group(function () {
+
+            Route::post('/', 'store');
+            Route::delete('/{reaction}', 'destroy');
+
+            Route::get('/stats', 'getStats');
+            Route::get('/detailed', 'getDetailed');
+            Route::get('/', 'getByMessage');
+
+            Route::get('/{emoji}/has-reacted', 'hasReacted');
+            Route::get('/{emoji}/users', 'getUsersByEmoji');
+        });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Message Pins
+    |--------------------------------------------------------------------------
+    */
+
+    Route::controller(MessagePinController::class)->group(function () {
+        Route::post('/messages/{message}/pin', 'store');
+        Route::delete('/messages/{message}/pin', 'destroy');
+        Route::get('/conversations/{conversation}/pinned', 'getPinned');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Typing Indicators
+    |--------------------------------------------------------------------------
+    */
+
+    Route::prefix('conversations/{conversation}')
+        ->controller(TypingIndicatorController::class)
+        ->group(function () {
+            Route::post('/typing', 'store');
+            Route::delete('/typing', 'destroy');
+            Route::get('/typing', 'getTyping');
+        });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Message Search
+    |--------------------------------------------------------------------------
+    */
+
+    Route::controller(MessageSearchController::class)->group(function () {
+        Route::get('/messages/search', 'searchGlobal');
+
+        Route::prefix('conversations/{conversation}')->group(function () {
+            Route::get('/messages/search', 'search');
+            Route::get('/messages/suggestions', 'suggestions');
+        });
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Blocked Users
+    |--------------------------------------------------------------------------
+    */
+
+    Route::controller(BlockedUserController::class)->group(function () {
+        Route::get('/blocked-users', 'index');
+        Route::post('/blocked-users', 'store');
+        Route::delete('/blocked-users/{blockedUser}', 'destroy');
+
+        Route::get('/users/{user}/is-blocked', 'isBlocked');
+        Route::get('/users/{user}/has-blocked-me', 'hasBlockedMe');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Bookmarks
+    |--------------------------------------------------------------------------
+    */
+
+    Route::controller(MessageBookmarkController::class)->group(function () {
+        Route::get('/bookmarks', 'index');
+        Route::put('/bookmarks/{messageBookmark}', 'update');
+
+        Route::get('/conversations/{conversation}/bookmarks', 'conversationBookmarks');
+
+        Route::post('/messages/{message}/bookmark', 'store');
+        Route::delete('/messages/{message}/bookmark', 'destroy');
+        Route::get('/messages/{message}/bookmark/check', 'check');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Friendships
+    |--------------------------------------------------------------------------
+    */
+
+    Route::controller(FriendshipController::class)->group(function () {
+        Route::post('/friendships', 'store');
+        Route::post('/friendships/{friendship}/accept', 'accept');
+    });
 });
