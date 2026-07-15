@@ -192,8 +192,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/friendships', 'store');
         Route::post('/friendships/{friendship}/accept', 'accept');
         Route::get('/users', 'users');
-        Route::get('/friendships/requests', 'listRequests');
-        Route::get('/friendships', 'listFriends');
+        Route::get('/friend-requests', 'listRequests');
+        Route::get('/friendships/friends', 'listFriends');
         Route::get('/friendships/send-requests', 'listSentRequests');
     });
 });
