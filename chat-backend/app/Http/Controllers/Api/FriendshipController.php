@@ -65,7 +65,7 @@ class FriendshipController extends Controller
     {
         $user = $request->user();
 
-        $friendRequests = Friendship::where('recipient_id', $user->id)
+        $friendRequests = Friendship::where('receiver_id', $user->id)
             ->where('status', 'pending')
             ->get();
 
@@ -80,7 +80,7 @@ class FriendshipController extends Controller
 
         $friends = Friendship::where(function ($query) use ($user) {
             $query->where('sender_id', $user->id)
-                ->orWhere('recipient_id', $user->id);
+                ->orWhere('receiver_id', $user->id);
         })
             ->where('status', 'accepted')
             ->get();

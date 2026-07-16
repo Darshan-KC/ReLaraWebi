@@ -33,7 +33,6 @@ return new class extends Migration
                 'sender_id',
                 'receiver_id',
             ]);
-            $table->timestamps();
         });
     }
 
