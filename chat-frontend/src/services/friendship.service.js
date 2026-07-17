@@ -21,7 +21,7 @@ export const getUsers = async () => {
  * @returns {Promise<any>} A promise that resolves to the created friend request.
  */
 export const sendFriendRequest = async (receiverId) => {
-    const response = await apiFetch("/friend-requests", {
+    const response = await apiFetch("/friendships", {
         method: "POST",
         body: JSON.stringify({
             receiver_id: receiverId,
@@ -39,8 +39,8 @@ export const sendFriendRequest = async (receiverId) => {
  * @param {string|number} requestId - The ID of the friend request.
  * @returns {Promise<any>} A promise that resolves to the accepted friendship.
  */
-export const acceptFriendRequest = async (requestId) => {
-    const response = await apiFetch(`/friend-requests/${requestId}/accept`, {
+export const acceptFriendRequest = async (friendshipId) => {
+    const response = await apiFetch(`/friendships/${friendshipId}/accept`, {
         method: "POST",
     });
 
@@ -68,5 +68,10 @@ export const getFriends = async () => {
  */
 export const getFriendRequests = async () => {
     const response = await apiFetch("/friend-requests");
+    return response.data;
+};
+
+export const getSentRequests = async () => {
+    const response = await apiFetch("/friendships/send-requests");
     return response.data;
 };

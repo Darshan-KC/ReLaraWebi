@@ -34,7 +34,7 @@ class FriendshipController extends Controller
 
         $friendship = $action->execute($dto);
 
-        // $friendship = [];
+        $friendship->load(['sender', 'receiver']);
 
         return response()->json([
             'message' => 'Friend request sent.',
@@ -53,6 +53,8 @@ class FriendshipController extends Controller
             $friendship
         );
 
+        $friendship->load(['sender', 'receiver']);
+
         return response()->json([
             'message' => 'Friend request accepted.',
             'data' => FriendshipResource::make(
@@ -65,7 +67,8 @@ class FriendshipController extends Controller
     {
         $user = $request->user();
 
-        $friendRequests = Friendship::where('receiver_id', $user->id)
+        $friendRequests = Friendship::with(['sender', 'receiver'])
+            ->where('receiver_id', $user->id)
             ->where('status', 'pending')
             ->get();
 
@@ -78,10 +81,11 @@ class FriendshipController extends Controller
     {
         $user = $request->user();
 
-        $friends = Friendship::where(function ($query) use ($user) {
-            $query->where('sender_id', $user->id)
-                ->orWhere('receiver_id', $user->id);
-        })
+        $friends = Friendship::with(['sender', 'receiver'])
+            ->where(function ($query) use ($user) {
+                $query->where('sender_id', $user->id)
+                    ->orWhere('receiver_id', $user->id);
+            })
             ->where('status', 'accepted')
             ->get();
 
@@ -94,7 +98,8 @@ class FriendshipController extends Controller
     {
         $user = $request->user();
 
-        $sentRequests = Friendship::where('sender_id', $user->id)
+        $sentRequests = Friendship::with(['sender', 'receiver'])
+            ->where('sender_id', $user->id)
             ->where('status', 'pending')
             ->get();
 
