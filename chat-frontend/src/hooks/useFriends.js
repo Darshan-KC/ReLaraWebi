@@ -49,7 +49,7 @@ export default function useFriends() {
     setRequests((prev) => prev.filter((r) => r.id !== id));
 
     const f = await getFriends();
-    setFriends(f.status === "fulfilled" ? f.value || [] : []);
+    setFriends(Array.isArray(f) ? f : []);
   };
 
   const friendIds = new Set(
@@ -76,6 +76,7 @@ export default function useFriends() {
     users,
     requests,
     friends,
+    sentRequests,
     loading,
     addFriend,
     acceptRequest,

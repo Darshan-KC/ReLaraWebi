@@ -1,8 +1,16 @@
-import useFriends from "../../hooks/useFriends";
 import { Link } from "react-router-dom";
+import useFriends from "../../hooks/useFriends";
+import { useAuth } from "../../hooks/useAuth";
+import Avatar from "../../components/ui/Avatar";
 
 export default function Friends() {
   const { friends } = useFriends();
+  const { user } = useAuth();
+
+  const getOther = (friendship) =>
+    friendship.sender?.id === user?.id
+      ? friendship.receiver
+      : friendship.sender;
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -18,48 +26,45 @@ export default function Friends() {
             </p>
           </div>
 
-          <Link
-            // onClick={() => console.log("Add Friend clicked")}
-            to="/find-friends"
-            className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-lg shadow-md transition duration-200"
-          >
-            + Add Friend
-          </Link>
+          <div className="flex gap-3">
+            <Link
+              to="/friend-requests"
+              className="bg-white hover:bg-gray-50 text-gray-700 font-medium px-5 py-2.5 rounded-lg shadow-sm border border-gray-200 transition duration-200"
+            >
+              Requests
+            </Link>
+            <Link
+              to="/find-friends"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-lg shadow-md transition duration-200"
+            >
+              + Add Friend
+            </Link>
+          </div>
         </div>
 
         {/* Friends List */}
         <div className="grid gap-4">
-          {friends.map((friend) => (
-            <div
-              key={friend.id}
-              className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-200 p-5 flex items-center justify-between"
-            >
-              <div className="flex items-center gap-4">
-                {/* Avatar */}
-                <div className="w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center text-lg font-bold">
-                  {friend.name.charAt(0).toUpperCase()}
-                </div>
-
-                {/* Friend Info */}
-                <div>
-                  <h2 className="font-semibold text-lg text-gray-800">
-                    {friend.name}
-                  </h2>
-                  <p className="text-sm text-gray-500">
-                    Friend
-                  </p>
+          {friends.map((friend) => {
+            const other = getOther(friend);
+            return (
+              <div
+                key={friend.id}
+                className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-200 p-5 flex items-center justify-between"
+              >
+                <div className="flex items-center gap-4">
+                  <Avatar name={other?.name} size="lg" />
+                  <div>
+                    <h2 className="font-semibold text-lg text-gray-800">
+                      {other?.name}
+                    </h2>
+                    <p className="text-sm text-gray-500">
+                      {other?.email}
+                    </p>
+                  </div>
                 </div>
               </div>
-
-              {/* Message Button */}
-              <button
-                onClick={() => openChat(friend)}
-                className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition"
-              >
-                Message
-              </button>
-            </div>
-          ))}
+            );
+          })}
 
           {friends.length === 0 && (
             <div className="bg-white rounded-xl shadow-sm p-10 text-center text-gray-500">
