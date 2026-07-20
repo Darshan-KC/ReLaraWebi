@@ -24,4 +24,11 @@ export const AuthService = {
   me() {
     return apiFetch("/me");
   },
+
+  updateProfile(payload) {
+    return apiFetch("/user", {
+      method: "PUT",
+      body: JSON.stringify(payload),
+    });
+  },
 };

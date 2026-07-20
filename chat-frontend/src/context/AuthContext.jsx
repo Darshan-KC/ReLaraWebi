@@ -51,6 +51,11 @@ export function AuthProvider({ children }) {
     setUser(data.user);
   };
 
+  const updateProfile = async (payload) => {
+    const data = await AuthService.updateProfile(payload);
+    setUser(data.user);
+  };
+
   const logout = async () => {
 
     try {
@@ -70,6 +75,7 @@ export function AuthProvider({ children }) {
         login,
         register,
         logout,
+        updateProfile,
       }}
     >
       {children}

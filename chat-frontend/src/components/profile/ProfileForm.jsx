@@ -7,7 +7,7 @@ const profileSchema = z.object({
   email: z.string().email("Invalid email address"),
 });
 
-export default function ProfileForm({ user, onChange, onSave }) {
+export default function ProfileForm({ user, onCancel, onSave }) {
 
   const { register, handleSubmit, setError, formState: { errors, isSubmitting }} = useForm({
     resolver: zodResolver(profileSchema),
@@ -20,12 +20,10 @@ export default function ProfileForm({ user, onChange, onSave }) {
   const onSubmit = async (data) => {
     try {
       await onSave(data);
-    }catch(error){
-      if(error.response?.status === 422){
-        const backendErrors = error.response.data.errors;
-
-        Object.keys(backendErrors).forEach((field) => {
-          setError(field, { type: "server", message: backendErrors[field][0] });
+    } catch (error) {
+      if (error.errors) {
+        Object.keys(error.errors).forEach((field) => {
+          setError(field, { type: "server", message: error.errors[field][0] });
         });
       }
     }
@@ -37,33 +35,38 @@ export default function ProfileForm({ user, onChange, onSave }) {
         <label className="block text-gray-700 mb-2">Name</label>
         <input
           type="text"
-          name="name"
-          value={user?.name || ""}
-          onChange={onChange}
+          {...register("name")}
           className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-          error={errors.name?.message}
         />
+        {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
       </div>
 
       <div className="mb-4">
         <label className="block text-gray-700 mb-2">Email</label>
         <input
           type="email"
-          name="email"
-          value={user?.email || ""}
-          onChange={onChange}
+          {...register("email")}
           className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-          error={errors.email?.message}
         />
+        {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
       </div>
 
-      <button
-        type="submit"
-        className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-colors"
-        loading={isSubmitting}
-      >
-        Save Changes
-      </button>
+      <div className="flex gap-3">
+        <button
+          type="submit"
+          className="flex-1 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-colors"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Saving..." : "Save Changes"}
+        </button>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg hover:bg-gray-300 transition-colors"
+        >
+          Cancel
+        </button>
+      </div>
     </form>
   );
 }
