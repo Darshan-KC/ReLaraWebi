@@ -17,7 +17,19 @@ class FriendshipController extends Controller
     {
         $user = $request->user();
 
-        $users = \App\Models\User::where('id', '!=', $user->id)->get();
+        $relatedUserIds = Friendship::where(function ($query) use ($user) {
+                $query->where('sender_id', $user->id)
+                    ->orWhere('receiver_id', $user->id);
+            })
+            ->get()
+            ->flatMap(fn ($f) => [$f->sender_id, $f->receiver_id])
+            ->filter(fn ($id) => $id !== $user->id)
+            ->unique()
+            ->values();
+
+        $users = \App\Models\User::where('id', '!=', $user->id)
+            ->whereNotIn('id', $relatedUserIds)
+            ->get();
 
         return response()->json([
             'data' => $users,
