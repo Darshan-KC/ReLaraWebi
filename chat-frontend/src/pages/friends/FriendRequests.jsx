@@ -1,15 +1,20 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useFriends from "../../hooks/useFriends";
 
 export default function FriendRequests() {
   const { requests, sentRequests, acceptRequest, loading } = useFriends();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("received");
   const [acceptingId, setAcceptingId] = useState(null);
 
   const handleAccept = async (id) => {
     setAcceptingId(id);
     try {
-      await acceptRequest(id);
+      const conversation = await acceptRequest(id);
+      if (conversation?.id) {
+        navigate("/chat", { state: { conversationId: conversation.id } });
+      }
     } finally {
       setAcceptingId(null);
     }

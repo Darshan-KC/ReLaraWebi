@@ -44,12 +44,14 @@ export default function useFriends() {
   };
 
   const acceptRequest = async (id) => {
-    await acceptFriendRequest(id);
+    const result = await acceptFriendRequest(id);
 
     setRequests((prev) => prev.filter((r) => r.id !== id));
 
     const f = await getFriends();
     setFriends(Array.isArray(f) ? f : []);
+
+    return result.conversation;
   };
 
   const friendIds = new Set(

@@ -44,7 +44,7 @@ export const acceptFriendRequest = async (friendshipId) => {
         method: "POST",
     });
 
-    return response.data;
+    return response;
 };
 
 /**

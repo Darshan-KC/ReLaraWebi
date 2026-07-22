@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import {
+  openConversation,
   getConversations,
   getMessages,
   sendMessage,
@@ -65,10 +66,7 @@ export default function useChat(user) {
     setMessages((prev) => [...prev, tempMessage]);
 
     try {
-      const savedMessage = await sendMessage({
-        conversation_id: selectedConversation.id,
-        body,
-      });
+      const savedMessage = await sendMessage(selectedConversation.id, body);
 
       // Replace temp message
       setMessages((prev) =>
@@ -87,10 +85,35 @@ export default function useChat(user) {
     setMessages((prev) => [...prev, message]);
   };
 
-  const openChat = async (friend) => {
-    const conversation = await openConversation(friend.id);
+  // Open or find existing conversation with a friend
+  const openChat = async (friendId) => {
+    const conversation = await openConversation(friendId);
 
     await selectConversation(conversation);
+
+    await fetchConversations();
+
+    return conversation;
+  };
+
+  // Select a conversation by its ID (for pre-selecting after accept)
+  const selectConversationById = async (conversationId) => {
+    const found = conversations.find((c) => c.id === conversationId);
+
+    if (found) {
+      await selectConversation(found);
+      return;
+    }
+
+    // If not in list yet, refetch and try again
+    await fetchConversations();
+    const data = await getConversations();
+    const updated = data?.data?.find?.((c) => c.id === conversationId)
+      || (Array.isArray(data) ? data.find((c) => c.id === conversationId) : null);
+
+    if (updated) {
+      await selectConversation(updated);
+    }
   };
 
   return {
@@ -100,6 +123,7 @@ export default function useChat(user) {
 
     setSelectedConversation: selectConversation,
     openChat,
+    selectConversationById,
 
     messages,
 
@@ -110,5 +134,7 @@ export default function useChat(user) {
     handleSendMessage,
 
     appendMessage,
+
+    refreshConversations: fetchConversations,
   };
 }

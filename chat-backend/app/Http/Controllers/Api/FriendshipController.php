@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Actions\Friendship\AcceptFriendRequestAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Friendship\SendFriendRequest;
+use App\Http\Resources\ConversationResource;
 use App\Http\Resources\FriendshipResource;
 use Illuminate\Http\Request;
 use App\DTO\Friendship\SendFriendRequestDTO;
@@ -61,16 +62,20 @@ class FriendshipController extends Controller
         AcceptFriendRequestAction $action,
     ) {
 
-        $friendship = $action->execute(
+        $result = $action->execute(
             $friendship
         );
 
-        $friendship->load(['sender', 'receiver']);
+        $result['friendship']->load(['sender', 'receiver']);
+        $result['conversation']->load('participants');
 
         return response()->json([
             'message' => 'Friend request accepted.',
             'data' => FriendshipResource::make(
-                $friendship
+                $result['friendship']
+            ),
+            'conversation' => ConversationResource::make(
+                $result['conversation']
             ),
         ]);
     }

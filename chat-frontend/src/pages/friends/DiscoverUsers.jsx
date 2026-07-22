@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useFriends from "../../hooks/useFriends";
 
 export default function DiscoverUsers() {
   const { users, loading, addFriend, acceptRequest, getUserStatus } =
     useFriends();
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [sendingId, setSendingId] = useState(null);
 
@@ -24,7 +26,10 @@ export default function DiscoverUsers() {
   const handleAccept = async (requestId) => {
     setSendingId(requestId);
     try {
-      await acceptRequest(requestId);
+      const conversation = await acceptRequest(requestId);
+      if (conversation?.id) {
+        navigate("/chat", { state: { conversationId: conversation.id } });
+      }
     } finally {
       setSendingId(null);
     }
