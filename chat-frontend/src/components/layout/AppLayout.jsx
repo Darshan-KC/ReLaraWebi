@@ -1,5 +1,6 @@
 import Sidebar from "../navigation/Sidebar";
 import Navbar from "../navigation/Navbar";
+import Footer from "./Footer";
 import { Outlet } from "react-router-dom";
 
 export default function AppLayout() {
@@ -21,6 +22,7 @@ export default function AppLayout() {
         </main>
 
       </div>
+      <Footer />
     </div>
   );
 }
