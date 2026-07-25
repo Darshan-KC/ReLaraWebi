@@ -31,10 +31,8 @@ class MarkConversationReadAction
         //     'last_read_message_id' => $conversation->last_message_id,
         // ]);
 
-        $conversationId = $conversation;
-
-        DB::transaction(function () use ($conversationId, $userId) {
-            $conversation = Conversation::lockForUpdate()->findOrFail($conversationId);
+        DB::transaction(function () use ($conversation, $userId) {
+            $conversation = Conversation::lockForUpdate()->findOrFail($conversation->id);
 
             $conversation->assertParticipant($userId);
 

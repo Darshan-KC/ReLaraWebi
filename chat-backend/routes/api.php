@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BlockedUserController;
 use App\Http\Controllers\Api\ConversationController;
+use App\Http\Controllers\Api\ConversationReadController;
 use App\Http\Controllers\Api\FriendshipController;
 use App\Http\Controllers\Api\MessageBookmarkController;
 use App\Http\Controllers\Api\MessageController;
@@ -65,6 +66,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/conversations/{conversation}', 'show');
         Route::post('/conversations/open', 'open');
     });
+
+    Route::post('/conversations/{conversation}/read', [ConversationReadController::class, 'store']);
 
     /*
     |--------------------------------------------------------------------------

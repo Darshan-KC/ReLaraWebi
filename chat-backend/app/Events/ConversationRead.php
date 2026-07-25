@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use Illuminate\Broadcasting\Channel;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class ConversationRead implements ShouldBroadcast
@@ -13,9 +13,9 @@ class ConversationRead implements ShouldBroadcast
         public int $lastReadMessageId
     ) {}
 
-    public function broadcastOn(): Channel
+    public function broadcastOn(): PrivateChannel
     {
-        return new Channel(
+        return new PrivateChannel(
             'conversation.' . $this->conversationId
         );
     }

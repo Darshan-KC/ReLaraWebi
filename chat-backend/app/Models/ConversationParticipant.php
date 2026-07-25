@@ -10,9 +10,11 @@ class ConversationParticipant extends Model
         'conversation_id',
         'user_id',
         'role',
+        'is_active',
         'joined_at',
         'left_at',
         'last_read_message_id',
+        'last_read_at',
         'muted_until',
     ];
 
@@ -20,6 +22,7 @@ class ConversationParticipant extends Model
         'joined_at' => 'datetime',
         'left_at' => 'datetime',
         'muted_until' => 'datetime',
+        'last_read_at' => 'datetime',
     ];
 
     public function conversation()
