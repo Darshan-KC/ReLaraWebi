@@ -22,6 +22,7 @@ export default function AppLayout() {
         </main>
 
       </div>
+      {/* Footer Section  */}
       <Footer />
     </div>
   );
