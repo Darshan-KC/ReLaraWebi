@@ -195,6 +195,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::controller(FriendshipController::class)->group(function () {
         Route::post('/friendships', 'store');
         Route::post('/friendships/{friendship}/accept', 'accept');
+        Route::delete('/friendships/{friendship}', 'destroy');
         Route::get('/users', 'users');
         Route::get('/friend-requests', 'listRequests');
         Route::get('/friendships/friends', 'listFriends');

@@ -124,4 +124,25 @@ class FriendshipController extends Controller
             'data' => FriendshipResource::collection($sentRequests),
         ]);
     }
+
+    public function destroy(Friendship $friendship)
+    {
+        $user = request()->user();
+
+        abort_unless(
+            $friendship->status === 'accepted'
+                && in_array($user->id, [
+                    $friendship->sender_id,
+                    $friendship->receiver_id,
+                ]),
+            403,
+            'Not authorized.'
+        );
+
+        $friendship->delete();
+
+        return response()->json([
+            'message' => 'Unfriended successfully.',
+        ]);
+    }
 }
