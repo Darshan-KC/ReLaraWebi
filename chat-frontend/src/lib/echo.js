@@ -1,5 +1,6 @@
 import Echo from "laravel-echo";
 import Pusher from "pusher-js";
+import { TokenService } from "../services/token.service";
 
 window.Pusher = Pusher;
 
@@ -20,7 +21,7 @@ const echo = new Echo({
 
   auth: {
     headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      Authorization: `Bearer ${TokenService.get()}`,
     },
   },
 });

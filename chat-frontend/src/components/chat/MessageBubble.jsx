@@ -8,7 +8,7 @@ export default function MessageBubble({ message, isOwn }) {
           className={`px-4 py-2 rounded-lg text-sm
           ${isOwn ? "bg-blue-600 text-white" : "bg-gray-200"}`}
         >
-          {message.text}
+          {message.body}
         </div>
 
         <span className="text-xs text-gray-400 mt-1 self-end">

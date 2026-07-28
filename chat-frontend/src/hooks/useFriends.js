@@ -6,6 +6,7 @@ import {
   acceptFriendRequest,
   getFriends,
   getSentRequests,
+  unfriend as unfriendApi,
 } from "../services/friendship.service";
 
 export default function useFriends() {
@@ -74,6 +75,12 @@ export default function useFriends() {
     return "none";
   };
 
+  const removeFriend = async (friendshipId) => {
+    await unfriendApi(friendshipId);
+
+    setFriends((prev) => prev.filter((f) => f.id !== friendshipId));
+  };
+
   return {
     users,
     requests,
@@ -82,6 +89,7 @@ export default function useFriends() {
     loading,
     addFriend,
     acceptRequest,
+    removeFriend,
     getUserStatus,
   };
 }

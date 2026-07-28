@@ -1,29 +1,31 @@
 import Sidebar from "../navigation/Sidebar";
 import Navbar from "../navigation/Navbar";
-import Footer from "./Footer";
+import Footer from "./footer";
 import { Outlet } from "react-router-dom";
 
 export default function AppLayout() {
   return (
-    <div className="flex h-screen bg-gray-100">
-      
-      {/* Sidebar */}
-      <Sidebar />
+    <>
+      <div className="flex h-screen bg-gray-100">
 
-      {/* Main Area */}
-      <div className="flex flex-col flex-1">
+        {/* Sidebar */}
+        <Sidebar />
 
-        {/* Navbar */}
-        <Navbar />
+        {/* Main Area */}
+        <div className="flex flex-col flex-1">
 
-        {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-6">
-          <Outlet />
-        </main>
+          {/* Navbar */}
+          <Navbar />
 
+          {/* Page Content */}
+          <main className="flex-1 overflow-y-auto p-6">
+            <Outlet />
+          </main>
+
+        </div>
+        {/* Footer Section  */}
       </div>
-      {/* Footer Section  */}
       <Footer />
-    </div>
+    </>
   );
 }

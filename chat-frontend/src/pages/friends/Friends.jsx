@@ -1,16 +1,30 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import useFriends from "../../hooks/useFriends";
 import { useAuth } from "../../hooks/useAuth";
 import Avatar from "../../components/ui/Avatar";
 
 export default function Friends() {
-  const { friends } = useFriends();
+  const { friends, removeFriend } = useFriends();
   const { user } = useAuth();
+  const [unfriendingId, setUnfriendingId] = useState(null);
 
   const getOther = (friendship) =>
     friendship.sender?.id === user?.id
       ? friendship.receiver
       : friendship.sender;
+
+  const handleUnfriend = async (friendship) => {
+    const other = getOther(friendship);
+    if (!window.confirm(`Unfriend ${other?.name}?`)) return;
+
+    setUnfriendingId(friendship.id);
+    try {
+      await removeFriend(friendship.id);
+    } finally {
+      setUnfriendingId(null);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -62,6 +76,14 @@ export default function Friends() {
                     </p>
                   </div>
                 </div>
+
+                <button
+                  onClick={() => handleUnfriend(friend)}
+                  disabled={unfriendingId === friend.id}
+                  className="px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 border border-red-200 rounded-lg transition disabled:opacity-50"
+                >
+                  {unfriendingId === friend.id ? "Removing..." : "Unfriend"}
+                </button>
               </div>
             );
           })}

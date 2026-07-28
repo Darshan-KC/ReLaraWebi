@@ -75,3 +75,11 @@ export const getSentRequests = async () => {
     const response = await apiFetch("/friendships/send-requests");
     return response.data;
 };
+
+export const unfriend = async (friendshipId) => {
+    const response = await apiFetch(`/friendships/${friendshipId}`, {
+        method: "DELETE",
+    });
+
+    return response;
+};
