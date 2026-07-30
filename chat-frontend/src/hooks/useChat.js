@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import {
   openConversation,
@@ -21,10 +21,10 @@ export default function useChat(user) {
   // Fetch conversations
   useEffect(() => {
     fetchConversations();
-  }, []);
+  }, [fetchConversations]);
 
   // Fetch conversations function
-  const fetchConversations = async () => {
+  const fetchConversations = useCallback(async () => {
     try {
       setLoadingConversations(true);
 
@@ -34,7 +34,7 @@ export default function useChat(user) {
     } finally {
       setLoadingConversations(false);
     }
-  };
+  }, []);
 
   // Select conversation
   const selectConversation = async (conversation) => {
@@ -97,7 +97,7 @@ export default function useChat(user) {
   };
 
   // Select a conversation by its ID (for pre-selecting after accept)
-  const selectConversationById = async (conversationId) => {
+  const selectConversationById = useCallback(async (conversationId) => {
     const found = conversations.find((c) => c.id === conversationId);
 
     if (found) {
@@ -114,7 +114,7 @@ export default function useChat(user) {
     if (updated) {
       await selectConversation(updated);
     }
-  };
+  }, [conversations, fetchConversations]);
 
   return {
     conversations,

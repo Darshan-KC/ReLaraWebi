@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ChatLayout from "../../components/chat/ChatLayout";
 import ChatSidebar from "../../components/chat/ChatSidebar";
 import ChatHeader from "../../components/chat/ChatHeader";
@@ -12,6 +12,7 @@ import useChatRealtime from "../../hooks/useChatRealtime";
 export default function Chat() {
   const { user } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const {
     conversations,
@@ -40,9 +41,9 @@ export default function Chat() {
         selectConversationById(conversationId);
       });
 
-      window.history.replaceState({}, document.title);
+      navigate(".", { replace: true, state: {} });
     }
-  }, [location.state?.conversationId, refreshConversations, selectConversationById]);
+  }, [location.state?.conversationId, refreshConversations, selectConversationById, navigate]);
 
   const handleSelectConversation = (conversation) => {
     setSelectedConversation(conversation);
