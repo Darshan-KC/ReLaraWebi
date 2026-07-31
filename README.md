@@ -1,5 +1,5 @@
 # RELARAWEBI - Chat Application
-Chat Application using React 19 and Laravel 12 for practice
+Chat Application using React 19 and Laravel 12 for practice references from facebook and whatsapp
 
 
 ## 🚀 Features Implemented
