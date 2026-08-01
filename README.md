@@ -7,6 +7,7 @@ Chat Application using React 19 and Laravel 12 for practice references from face
 ### Find Friends
 - Send Friend Request
 - Find Friends
+- Start conversation after accepting request
 
 ### ✅ Core Messaging
 - One-to-one conversations
