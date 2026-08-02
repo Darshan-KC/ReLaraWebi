@@ -1,22 +1,16 @@
-import { createContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { AuthService } from "../services/auth.service";
 import { TokenService } from "../services/token.service";
-
-export const AuthContext = createContext();
+import { AuthContext } from "./authContext";
 
 export function AuthProvider({ children }) {
 
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  const token = TokenService.get();
+  const [loading, setLoading] = useState(() => !!TokenService.get());
 
   useEffect(() => {
 
-    if (!token) {
-      setLoading(false);
-      return;
-    }
+    if (!loading) return;
 
     AuthService.me()
       .then((data) => {
@@ -29,7 +23,7 @@ export function AuthProvider({ children }) {
         setLoading(false);
       });
 
-  }, []);
+  }, [loading]);
 
   const login = async (credentials) => {
 
@@ -60,7 +54,9 @@ export function AuthProvider({ children }) {
 
     try {
       await AuthService.logout();
-    } catch {}
+    } catch {
+      /* ignore network errors on logout */
+    }
 
     TokenService.remove();
 

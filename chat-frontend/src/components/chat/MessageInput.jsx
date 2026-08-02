@@ -2,7 +2,7 @@ import { useState } from "react";
 
 const GREETING_SUGGESTIONS = ["Hello!", "Hi!", "Hey there!", "How are you?"];
 
-export default function MessageInput({ onSend, showSuggestions = false }) {
+export default function MessageInput({ onSend, onTyping, showSuggestions = false }) {
   const [text, setText] = useState("");
 
   const handleSend = () => {
@@ -38,7 +38,10 @@ export default function MessageInput({ onSend, showSuggestions = false }) {
       <div className="p-4 flex gap-2">
         <input
           value={text}
-          onChange={(e) => setText(e.target.value)}
+          onChange={(e) => {
+            setText(e.target.value);
+            onTyping?.();
+          }}
           onKeyDown={(e) => {
             if (e.key === "Enter") handleSend();
           }}

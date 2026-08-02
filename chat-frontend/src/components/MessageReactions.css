@@ -30,6 +30,15 @@
   border-color: #999;
 }
 
+.reaction-button-active {
+  background: #dbeafe;
+  border-color: #3b82f6;
+}
+
+.reaction-button-active:hover {
+  background: #bfdbfe;
+}
+
 .reaction-count {
   font-size: 0.75rem;
   color: #666;

@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\MessageSearchController;
 use App\Http\Controllers\Api\TypingIndicatorController;
 use App\Http\Controllers\MessageReactionController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -53,7 +54,7 @@ Route::middleware('auth:sanctum')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::post('/broadcasting/auth', fn(Request $request) => $request->user());
+    Broadcast::routes(['middleware' => ['auth:sanctum'], 'prefix' => '']);
 
     /*
     |--------------------------------------------------------------------------

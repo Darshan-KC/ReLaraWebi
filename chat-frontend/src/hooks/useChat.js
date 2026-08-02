@@ -126,6 +126,7 @@ export default function useChat(user) {
     selectConversationById,
 
     messages,
+    setMessages,
 
     loadingConversations,
 

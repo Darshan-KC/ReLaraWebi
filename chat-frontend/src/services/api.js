@@ -13,11 +13,16 @@ export async function apiFetch(endpoint, options = {}) {
     ...options,
   });
 
-  const data = await response.json();
-
   if (!response.ok) {
-    throw data;
+    const error = await response.json().catch(() => ({}));
+    throw error;
   }
+
+  if (response.status === 204) {
+    return null;
+  }
+
+  const data = await response.json().catch(() => null);
 
   return data;
 }

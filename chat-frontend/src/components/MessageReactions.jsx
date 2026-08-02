@@ -1,34 +1,23 @@
-import React, { useState } from 'react';
-import './MessageReactions.css';
+import React, { useState } from "react";
+import "./MessageReactions.css";
 
-const AVAILABLE_EMOJIS = ['👍', '❤️', '😂', '😮', '😢', '🔥', '👏'];
+const AVAILABLE_EMOJIS = ["👍", "❤️", "😂", "😮", "😢", "🔥", "👏"];
 
-export default function MessageReactions({ messageId, initialReactions = {} }) {
-  const [reactions, setReactions] = useState(initialReactions);
+export default function MessageReactions({
+  messageId,
+  reactions = {},
+  myReactions = [],
+  onToggleReaction,
+}) {
   const [showPicker, setShowPicker] = useState(false);
 
-  const handleAddReaction = async (emoji) => {
-    try {
-      const response = await fetch(`/api/messages/${messageId}/reactions`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify({ emoji }),
-      });
+  const mySet = Array.isArray(myReactions)
+    ? new Set(myReactions)
+    : myReactions || new Set();
 
-      if (response.ok) {
-        const newReaction = await response.json();
-        setReactions((prev) => ({
-          ...prev,
-          [emoji]: (prev[emoji] || 0) + 1,
-        }));
-      }
-      setShowPicker(false);
-    } catch (error) {
-      console.error('Error adding reaction:', error);
-    }
+  const handleToggle = (emoji) => {
+    onToggleReaction(messageId, emoji);
+    setShowPicker(false);
   };
 
   return (
@@ -37,11 +26,11 @@ export default function MessageReactions({ messageId, initialReactions = {} }) {
         {Object.entries(reactions).map(([emoji, count]) => (
           <button
             key={emoji}
-            className="reaction-button"
-            onClick={() => handleAddReaction(emoji)}
-            title={`${count} reaction${count > 1 ? 's' : ''}`}
+            className={`reaction-button ${mySet.has(emoji) ? "reaction-button-active" : ""}`}
+            onClick={() => handleToggle(emoji)}
+            title={`${count} reaction${count > 1 ? "s" : ""}`}
           >
-            {emoji} <span className="reaction-count">{count > 0 ? count : ''}</span>
+            {emoji} <span className="reaction-count">{count}</span>
           </button>
         ))}
       </div>
@@ -61,7 +50,7 @@ export default function MessageReactions({ messageId, initialReactions = {} }) {
               <button
                 key={emoji}
                 className="emoji-option"
-                onClick={() => handleAddReaction(emoji)}
+                onClick={() => handleToggle(emoji)}
               >
                 {emoji}
               </button>

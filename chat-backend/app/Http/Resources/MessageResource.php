@@ -15,6 +15,9 @@ class MessageResource extends JsonResource
             'sender_id' => $this->sender_id,
             'type' => $this->type,
             'body' => $this->body,
+            'edit_count' => $this->edit_count ?? 0,
+            'edited_at' => $this->edited_at,
+            'is_pinned' => (bool) $this->is_pinned,
             'created_at' => $this->created_at,
         ];
     }

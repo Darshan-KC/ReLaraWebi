@@ -14,28 +14,30 @@ export default function useFriends() {
   const [requests, setRequests] = useState([]);
   const [friends, setFriends] = useState([]);
   const [sentRequests, setSentRequests] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const loadData = async () => {
-    setLoading(true);
+  useEffect(() => {
+    let cancelled = false;
 
-    const [uResult, rResult, fResult, sResult] = await Promise.allSettled([
+    Promise.allSettled([
       getUsers(),
       getFriendRequests(),
       getFriends(),
       getSentRequests(),
-    ]);
+    ]).then(([uResult, rResult, fResult, sResult]) => {
+      if (cancelled) return;
 
-    if (uResult.status === "fulfilled") setUsers(uResult.value || []);
-    if (rResult.status === "fulfilled") setRequests(rResult.value || []);
-    if (fResult.status === "fulfilled") setFriends(fResult.value || []);
-    if (sResult.status === "fulfilled") setSentRequests(sResult.value || []);
+      if (uResult.status === "fulfilled") setUsers(uResult.value || []);
+      if (rResult.status === "fulfilled") setRequests(rResult.value || []);
+      if (fResult.status === "fulfilled") setFriends(fResult.value || []);
+      if (sResult.status === "fulfilled") setSentRequests(sResult.value || []);
 
-    setLoading(false);
-  };
+      setLoading(false);
+    });
 
-  useEffect(() => {
-    loadData();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const addFriend = async (userId) => {
