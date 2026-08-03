@@ -18,11 +18,6 @@ export default function useChat(user) {
 
   const [loadingMessages, setLoadingMessages] = useState(false);
 
-  // Fetch conversations
-  useEffect(() => {
-    fetchConversations();
-  }, [fetchConversations]);
-
   // Fetch conversations function
   const fetchConversations = useCallback(async () => {
     try {
@@ -115,6 +110,11 @@ export default function useChat(user) {
       await selectConversation(updated);
     }
   }, [conversations, fetchConversations]);
+
+  // Fetch conversations
+  useEffect(() => {
+    fetchConversations();
+  }, [fetchConversations]);
 
   return {
     conversations,
