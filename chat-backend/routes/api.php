@@ -77,6 +77,8 @@ Route::middleware('auth:sanctum')->group(function () {
     */
 
     Route::controller(MessageController::class)->group(function () {
+        Route::get('/conversations/{conversation}/messages', 'index');
+        Route::post('/conversations/{conversation}/messages', 'storeInConversation');
         Route::post('/messages', 'store');
     });
 

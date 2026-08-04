@@ -2,6 +2,8 @@
 
 namespace App\DTO\Message;
 
+use Illuminate\Http\Request;
+
 class SendMessageDTO
 {
     public function __construct(
@@ -10,6 +12,16 @@ class SendMessageDTO
         public readonly string $body,
         public readonly string $type = 'text',
     ) {}
+
+    public static function fromRequest(Request $request): self
+    {
+        return new self(
+            conversationId: (int) $request->input('conversation_id'),
+            senderId: (int) $request->user()->id,
+            body: $request->input('body'),
+            type: $request->input('type', 'text'),
+        );
+    }
 
     public static function fromArray(array $array): self
     {
