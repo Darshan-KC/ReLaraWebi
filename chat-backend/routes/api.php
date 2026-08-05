@@ -63,6 +63,7 @@ Route::middleware('auth:sanctum')->group(function () {
     */
 
     Route::controller(ConversationController::class)->group(function () {
+        Route::get('/conversations/search', 'search');
         Route::get('/conversations', 'index');
         Route::get('/conversations/{conversation}', 'show');
         Route::post('/conversations/open', 'open');

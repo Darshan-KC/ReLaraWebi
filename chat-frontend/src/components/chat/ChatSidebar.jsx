@@ -50,7 +50,7 @@ export default function ChatSidebar({
         <input
           value={query}
           onChange={handleChange}
-          placeholder="Search messages..."
+          placeholder="Search conversations..."
           className="w-full px-3 py-1.5 text-sm border rounded-full focus:ring-2 focus:ring-blue-500"
         />
       </div>
@@ -64,7 +64,7 @@ export default function ChatSidebar({
 
         {isSearching && !searching && items.length === 0 && (
           <div className="p-4 text-sm text-gray-400 text-center">
-            No results
+            No conversations found
           </div>
         )}
 
@@ -74,13 +74,9 @@ export default function ChatSidebar({
           </div>
         )}
 
-        {items.map((item) => {
-          const isResult = isSearching;
-
-          return isResult
-            ? renderSearchResult(item, conversations, currentUserId, onSearchResultClick)
-            : renderConversation(item, currentUserId, selectedConversationId, onSelect);
-        })}
+        {items.map((item) =>
+          renderConversation(item, currentUserId, selectedConversationId, isSearching ? onSearchResultClick : onSelect),
+        )}
       </div>
     </div>
   );
@@ -109,26 +105,6 @@ function renderConversation(conversation, currentUserId, selectedConversationId,
       <span className="text-xs text-gray-400 shrink-0">
         {formatTime(conversation.updated_at)}
       </span>
-    </div>
-  );
-}
-
-function renderSearchResult(result, conversations, currentUserId, onSearchResultClick) {
-  const conversation = conversations.find((c) => c.id === result.conversation_id);
-  const other = conversation ? getOtherParticipant(conversation, currentUserId) : null;
-
-  return (
-    <div
-      key={result.id}
-      onClick={() => onSearchResultClick(result)}
-      className="flex items-center gap-3 p-3 cursor-pointer transition hover:bg-gray-100"
-    >
-      <Avatar name={other?.name} />
-
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium truncate">{other?.name || "Message"}</p>
-        <p className="text-xs text-gray-500 truncate">{result.body}</p>
-      </div>
     </div>
   );
 }

@@ -16,7 +16,7 @@ import {
   unblockUser,
   getBlockedUsers,
 } from "../../services/block.service";
-import { searchGlobalMessages } from "../../services/search.service";
+import { searchConversations } from "../../services/search.service";
 
 export default function Chat() {
   const { user } = useAuth();
@@ -75,7 +75,7 @@ export default function Chat() {
     setSearching(true);
 
     try {
-      const results = await searchGlobalMessages({ q: query });
+      const results = await searchConversations({ q: query });
       setSearchResults(results || []);
     } catch {
       setSearchResults([]);
@@ -86,8 +86,8 @@ export default function Chat() {
 
   const handleClearSearch = () => setSearchResults([]);
 
-  const handleSearchResultClick = async (result) => {
-    await selectConversationById(result.conversation_id);
+  const handleSearchResultClick = (conversation) => {
+    handleSelectConversation(conversation);
     handleClearSearch();
   };
 

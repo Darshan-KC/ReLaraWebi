@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Actions\Conversation\GetUserConversationsAction;
 use App\Actions\Conversation\OpenConversationAction;
+use App\Actions\Conversation\SearchConversationsAction;
 use App\DTO\Conversation\OpenConversationDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Conversation\OpenConversationRequest;
+use App\Http\Requests\Conversation\SearchConversationsRequest;
 use App\Http\Resources\ConversationResource;
 use App\Models\Conversation;
 use Illuminate\Http\Request;
@@ -18,6 +20,18 @@ class ConversationController extends Controller
     {
         return ConversationResource::collection(
             $action->execute(Auth::id())
+        );
+    }
+
+    public function search(
+        SearchConversationsRequest $request,
+        SearchConversationsAction $action,
+    ) {
+        return ConversationResource::collection(
+            $action->execute(
+                Auth::id(),
+                $request->input('q', '')
+            )
         );
     }
 

@@ -27,6 +27,11 @@ export const searchGlobalMessages = async (params = {}) => {
     return response.data ?? response;
 };
 
+export const searchConversations = async (params = {}) => {
+    const response = await apiFetch(`/conversations/search${buildQuery(params)}`);
+    return response.data ?? response;
+};
+
 export const getSuggestions = async (conversationId, q, limit = 10) => {
     const response = await apiFetch(
         `/conversations/${conversationId}/messages/suggestions${buildQuery({ q, limit })}`
