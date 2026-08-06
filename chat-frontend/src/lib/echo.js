@@ -25,5 +25,4 @@ const echo = new Echo({
     },
   },
 });
-
 export default echo;

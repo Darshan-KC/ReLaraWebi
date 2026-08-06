@@ -13,8 +13,11 @@ export default function useChatRealtime({
     );
 
     channel.listen(".message.sent", (event) => {
+      console.log("Message received:", event.message);
       onMessageReceived(event.message);
     });
+
+    console.log("here it comes");
 
     return () => {
       echo.leave(`conversation.${conversationId}`);
