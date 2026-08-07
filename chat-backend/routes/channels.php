@@ -11,9 +11,15 @@ Broadcast::channel(
     'conversation.{conversationId}',
     function ($user, $conversationId) {
 
-        return ConversationParticipant::query()
+        $isParticipant = ConversationParticipant::query()
             ->where('conversation_id', $conversationId)
             ->where('user_id', $user->id)
             ->exists();
+
+        logger()->info('CHANNEL_AUTH conversation.' . $conversationId
+            . ' user=' . $user->id
+            . ' allowed=' . ($isParticipant ? 'yes' : 'no'));
+
+        return $isParticipant;
     }
 );

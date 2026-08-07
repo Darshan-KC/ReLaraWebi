@@ -6,20 +6,41 @@ export default function useChatRealtime({
   onMessageReceived,
 }) {
   useEffect(() => {
-    if (!conversationId) return;
+    if (!conversationId) {
+      console.log("[Realtime] no conversationId, skipping subscribe");
+      return;
+    }
+
+    console.log(
+      `[Realtime] subscribing to private channel: conversation.${conversationId}`,
+    );
 
     const channel = echo.private(
       `conversation.${conversationId}`
     );
 
+    channel.bind("subscription_succeeded", () => {
+      console.log(
+        `[Realtime] subscribed OK to conversation.${conversationId}`,
+      );
+    });
+
+    channel.bind("subscription_error", (status) => {
+      console.error(
+        `[Realtime] subscription FAILED for conversation.${conversationId}`,
+        status,
+      );
+    });
+
     channel.listen(".message.sent", (event) => {
-      console.log("Message received:", event.message);
+      console.log("[Realtime] message.sent event received:", event);
       onMessageReceived(event.message);
     });
 
-    console.log("here it comes");
-
     return () => {
+      console.log(
+        `[Realtime] leaving channel conversation.${conversationId}`,
+      );
       echo.leave(`conversation.${conversationId}`);
     };
   }, [conversationId, onMessageReceived]);

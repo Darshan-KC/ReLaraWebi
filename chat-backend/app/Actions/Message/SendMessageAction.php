@@ -42,6 +42,10 @@ class SendMessageAction
                 'body' => $data->body,
             ]);
 
+            logger()->info('MESSAGE_CREATED id=' . $message->id
+                . ' conversation=' . $data->conversationId
+                . ' sender=' . $data->senderId);
+
             // 2. Update conversation (denormalized fields)
             Conversation::where('id', $data->conversationId)->update([
                 'last_message_id' => $message->id,
@@ -49,7 +53,10 @@ class SendMessageAction
             ]);
 
             // 3. Fire domain event (explicit)
+            logger()->info('FIRING MessageSent message=' . $message->id
+                . ' conversation=' . $data->conversationId);
             event(new MessageSent($message));
+            logger()->info('FIRED MessageSent message=' . $message->id);
 
             return $message;
         });
