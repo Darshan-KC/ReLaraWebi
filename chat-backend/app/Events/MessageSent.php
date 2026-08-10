@@ -23,6 +23,11 @@ class MessageSent implements ShouldBroadcast
     //     );
     // }
 
+    /**
+     * Get the channels the event should broadcast on.
+     *
+     * @return \Illuminate\Broadcasting\Channel|array
+     */
     public function broadcastOn()
     {
         logger()->info('BROADCAST MessageSent on private-conversation.'
@@ -31,11 +36,21 @@ class MessageSent implements ShouldBroadcast
         return new PrivateChannel('conversation.' . $this->message->conversation_id);
     }
 
+    /**
+     * Get the event name to broadcast.
+     *
+     * @return string
+     */
     public function broadcastAs(): string
     {
         return 'message.sent';
     }
 
+    /**
+     * Get the data to broadcast.
+     *
+     * @return array
+     */
     public function broadcastWith(): array
     {
         return [
