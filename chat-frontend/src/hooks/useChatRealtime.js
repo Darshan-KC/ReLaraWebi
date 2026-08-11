@@ -19,13 +19,13 @@ export default function useChatRealtime({
       `conversation.${conversationId}`
     );
 
-    channel.bind("subscription_succeeded", () => {
+    channel.subscribed(() => {
       console.log(
         `[Realtime] subscribed OK to conversation.${conversationId}`,
       );
     });
 
-    channel.bind("subscription_error", (status) => {
+    channel.error((status) => {
       console.error(
         `[Realtime] subscription FAILED for conversation.${conversationId}`,
         status,
