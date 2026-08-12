@@ -13,6 +13,10 @@ class ConversationRead implements ShouldBroadcast
         public int $lastReadMessageId
     ) {}
 
+    /**
+     * Summary of broadcastOn
+     * @return PrivateChannel
+     */
     public function broadcastOn(): PrivateChannel
     {
         return new PrivateChannel(
@@ -20,6 +24,10 @@ class ConversationRead implements ShouldBroadcast
         );
     }
 
+    /**
+     * Summary of broadcastAs
+     * @return string
+     */
     public function broadcastAs(): string
     {
         return 'conversation.read';
