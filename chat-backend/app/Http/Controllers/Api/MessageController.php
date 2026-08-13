@@ -13,6 +13,12 @@ use Illuminate\Support\Facades\Auth;
 
 class MessageController extends Controller
 {
+    /**
+     * Display a listing of the messages in a conversation.
+     *
+     * @param Conversation $conversation
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function index(Conversation $conversation)
     {
         $conversation->assertParticipant(Auth::id());
@@ -25,6 +31,13 @@ class MessageController extends Controller
         return MessageResource::collection($messages);
     }
 
+    /**
+     * Store a new message.
+     *
+     * @param SendMessageRequest $request
+     * @param SendMessageAction $action
+     * @return MessageResource
+     */
     public function store(
         SendMessageRequest $request,
         SendMessageAction $action
@@ -36,6 +49,14 @@ class MessageController extends Controller
         return new MessageResource($message);
     }
 
+    /**
+     * Store a new message in a conversation.
+     *
+     * @param StoreConversationMessageRequest $request
+     * @param Conversation $conversation
+     * @param SendMessageAction $action
+     * @return MessageResource
+     */
     public function storeInConversation(
         StoreConversationMessageRequest $request,
         Conversation $conversation,
