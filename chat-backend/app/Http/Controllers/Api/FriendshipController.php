@@ -14,6 +14,12 @@ use App\Models\Friendship;
 
 class FriendshipController extends Controller
 {
+    /**
+     * Display a listing of users that are not friends with the authenticated user.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function users(Request $request)
     {
         $user = $request->user();
@@ -36,6 +42,14 @@ class FriendshipController extends Controller
             'data' => $users,
         ]);
     }
+
+    /**
+     * Send a friend request to another user.
+     *
+     * @param SendFriendRequest $request
+     * @param SendFriendRequestAction $action
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store(
         SendFriendRequest $request,
         SendFriendRequestAction $action
@@ -57,6 +71,13 @@ class FriendshipController extends Controller
         ]);
     }
 
+    /**
+     * Accept a friend request.
+     *
+     * @param Friendship $friendship
+     * @param AcceptFriendRequestAction $action
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function accept(
         Friendship $friendship,
         AcceptFriendRequestAction $action,
@@ -80,6 +101,12 @@ class FriendshipController extends Controller
         ]);
     }
 
+    /**
+     * List all pending friend requests for the authenticated user.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function listRequests(Request $request)
     {
         $user = $request->user();
@@ -94,6 +121,12 @@ class FriendshipController extends Controller
         ]);
     }
 
+    /**
+     * List all friends for the authenticated user.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function listFriends(Request $request)
     {
         $user = $request->user();
@@ -111,6 +144,12 @@ class FriendshipController extends Controller
         ]);
     }
 
+    /**
+     * List all sent friend requests for the authenticated user.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function listSentRequests(Request $request)
     {
         $user = $request->user();
@@ -125,6 +164,12 @@ class FriendshipController extends Controller
         ]);
     }
 
+    /**
+     * Unfriend a user.
+     *
+     * @param Friendship $friendship
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function destroy(Friendship $friendship)
     {
         $user = request()->user();
