@@ -52,7 +52,7 @@ export default function useChat(user) {
 
     // Optimistic UI
     const tempMessage = {
-      id: Date.now(),
+      id: `temp-${Date.now()}`,
       body,
       sender_id: user.id,
       created_at: new Date().toISOString(),
@@ -63,10 +63,16 @@ export default function useChat(user) {
     try {
       const savedMessage = await sendMessage(selectedConversation.id, body);
 
-      // Replace temp message
-      setMessages((prev) =>
-        prev.map((msg) => (msg.id === tempMessage.id ? savedMessage : msg)),
-      );
+      // Replace the temp message and drop any realtime echo of the saved
+      // message (the sender's own socket also receives the broadcast), so the
+      // saved message only ever appears once.
+      setMessages((prev) => {
+        const next = prev.filter(
+          (msg) => msg.id !== tempMessage.id && msg.id !== savedMessage.id,
+        );
+
+        return [...next, savedMessage];
+      });
     } catch (error) {
       // rollback
       setMessages((prev) => prev.filter((msg) => msg.id !== tempMessage.id));
@@ -76,9 +82,11 @@ export default function useChat(user) {
   };
 
   // Receive realtime message
-  const appendMessage = (message) => {
-    setMessages((prev) => [...prev, message]);
-  };
+  const appendMessage = useCallback((message) => {
+    setMessages((prev) =>
+      prev.some((m) => m.id === message.id) ? prev : [...prev, message],
+    );
+  }, []);
 
   // Open or find existing conversation with a friend
   const openChat = async (friendId) => {

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { AuthService } from "../services/auth.service";
 import { TokenService } from "../services/token.service";
 import { AuthContext } from "./authContext";
+import { setEchoAuthToken } from "../lib/echo";
 
 export function AuthProvider({ children }) {
 
@@ -33,6 +34,8 @@ export function AuthProvider({ children }) {
 
     TokenService.set(data.token);
 
+    setEchoAuthToken(data.token);
+
     setUser(data.user);
   };
 
@@ -41,6 +44,8 @@ export function AuthProvider({ children }) {
     const data = await AuthService.register(payload);
 
     TokenService.set(data.token);
+
+    setEchoAuthToken(data.token);
 
     setUser(data.user);
   };
@@ -59,6 +64,8 @@ export function AuthProvider({ children }) {
     }
 
     TokenService.remove();
+
+    setEchoAuthToken("");
 
     setUser(null);
   };

@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { getTyping, setTyping, clearTyping } from "../services/typing.service";
 
+const TYPING_NOTIFY_INTERVAL = 1500;
+
 export default function useTypingIndicator(conversationId) {
   const [typingUsers, setTypingUsers] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const clearTimer = useRef(null);
+  const lastSentAt = useRef(0);
   const conversationRef = useRef(conversationId);
 
   // Keep the ref in sync without touching it during render
@@ -49,8 +52,14 @@ export default function useTypingIndicator(conversationId) {
 
     if (!current) return;
 
+    const now = Date.now();
+
     setIsTyping(true);
-    setTyping(current).catch(() => {});
+
+    if (now - lastSentAt.current >= TYPING_NOTIFY_INTERVAL) {
+      lastSentAt.current = now;
+      setTyping(current).catch(() => {});
+    }
 
     clearTimeout(clearTimer.current);
     clearTimer.current = setTimeout(() => {

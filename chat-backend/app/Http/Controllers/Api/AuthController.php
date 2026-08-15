@@ -16,6 +16,7 @@ class AuthController extends Controller
     public function index()
     {
         $user = Auth::user();
+
         return response()->json([
             'user' => $user,
         ]);
@@ -90,7 +91,7 @@ class AuthController extends Controller
     {
         $user = User::find($id);
 
-        if (!$user) {
+        if (! $user) {
             return response()->json([
                 'message' => 'User not found',
             ], 404);
@@ -110,7 +111,7 @@ class AuthController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'email' => 'required|email|max:255|unique:users,email,'.$user->id,
         ]);
 
         $user->update($validated);
@@ -126,6 +127,7 @@ class AuthController extends Controller
     public function destroy(string $id)
     {
         User::destroy($id);
+
         return response()->json([
             'message' => 'User deleted successfully',
         ]);
@@ -134,7 +136,8 @@ class AuthController extends Controller
     // Logout a user
     public function logout(Request $request)
     {
-        Auth::logout();
+        $request->user()->currentAccessToken()->delete();
+
         return response()->json([
             'message' => 'Logout successful',
         ]);

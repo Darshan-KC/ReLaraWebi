@@ -1,10 +1,16 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import echo from "../lib/echo";
 
 export default function useChatRealtime({
   conversationId,
   onMessageReceived,
 }) {
+  const handlerRef = useRef(onMessageReceived);
+
+  useEffect(() => {
+    handlerRef.current = onMessageReceived;
+  });
+
   useEffect(() => {
     if (!conversationId) {
       console.log("[Realtime] no conversationId, skipping subscribe");
@@ -34,7 +40,7 @@ export default function useChatRealtime({
 
     channel.listen(".message.sent", (event) => {
       console.log("[Realtime] message.sent event received:", event);
-      onMessageReceived(event.message);
+      handlerRef.current(event.message);
     });
 
     return () => {
@@ -43,5 +49,5 @@ export default function useChatRealtime({
       );
       echo.leave(`conversation.${conversationId}`);
     };
-  }, [conversationId, onMessageReceived]);
+  }, [conversationId]);
 }

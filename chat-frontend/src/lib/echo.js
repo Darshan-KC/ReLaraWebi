@@ -1,6 +1,7 @@
 import Echo from "laravel-echo";
 import Pusher from "pusher-js";
 import { TokenService } from "../services/token.service";
+import { API_URL } from "../services/api";
 
 window.Pusher = Pusher;
 
@@ -17,20 +18,28 @@ const echo = new Echo({
 
   enabledTransports: ["ws"],
 
-  authEndpoint: "http://127.0.0.1:8000/api/broadcasting/auth",
+  authEndpoint: `${API_URL}/broadcasting/auth`,
 
   auth: {
     headers: {
-      Authorization: `Bearer ${TokenService.get()}`,
+      Authorization: `Bearer ${TokenService.get() ?? ""}`,
     },
   },
 });
+
+export function setEchoAuthToken(token) {
+  const headers = echo?.connector?.options?.auth?.headers;
+
+  if (headers) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+}
 
 console.log("[Echo] config:", {
   key: import.meta.env.VITE_REVERB_APP_KEY,
   host: import.meta.env.VITE_REVERB_HOST,
   port: import.meta.env.VITE_REVERB_PORT ?? 8080,
-  authEndpoint: "http://127.0.0.1:8000/api/broadcasting/auth",
+  authEndpoint: `${API_URL}/broadcasting/auth`,
   token: TokenService.get() ? "present" : "MISSING",
 });
 
